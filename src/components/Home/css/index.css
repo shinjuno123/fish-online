@@ -1,5 +1,5 @@
 body{
-    background: no-repeat scroll url("images/background.jpg");
+    background: no-repeat scroll url("/images/background.jpg");
 }
 
 .setting{
@@ -7,7 +7,7 @@ body{
     height: 50px;
     cursor: pointer;
     z-index: 5;
-    background-image: url("images/setting.svg");
+    background-image: url("/images/setting.svg");
     background-color: rgba(0, 0, 0, 0);
     border: none;
     position: absolute;
@@ -36,6 +36,13 @@ body{
     font-size: 5rem;
     top : 55%;
     transform: translate(-50%,-50%);
+}
+.header p{
+    position: absolute;
+    top : 65%;
+    left : 48%;
+    font-size: 2rem;
+    transform: translate(-50%,0);
 }
 
 .main{

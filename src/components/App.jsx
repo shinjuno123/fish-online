@@ -1,19 +1,19 @@
 import React from "react";
-import SettingButton from "./SettingButton";
-import ModechageButton from "./ModeChangeButton";
-import Footer from "./Footer";
-import Main from "./Main";
-import Header from "./Header";
+import Home from "./Home/Home";
+import Game from "./In-Game/Game";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App () {
   return (
-    <div className="App">
-      <SettingButton />
-      <Header />
-      <Main />
-      <ModechageButton />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+          <Route index element={ <Home /> }></Route>
+          <Route path="game" element={ <Game /> }></Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+
   );
 }
 
