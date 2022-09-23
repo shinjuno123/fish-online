@@ -21,6 +21,8 @@ function CreateStarty (head) {
         this.starty.addChild(startyMouth);
         this._makeBodyFin();
         this._makeTailFin();
+        // this.starty.skew(90, [100, 200]);
+        // this.starty.transform();
     };
 
 
@@ -47,6 +49,7 @@ function CreateStarty (head) {
         startyTail.closed = true;
         startyTail.curves[0].handle1.y = -5;
         startyTail.curves[2].handle1.y = 5;
+
 
         return startyTail;
     };
