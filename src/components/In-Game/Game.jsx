@@ -12,7 +12,10 @@ function Game () {
     function canvasSetup () {
         const canvas = document.getElementById("game-canvas");
         paper.setup(canvas);
-        CreateStarty();
+        const starty = new CreateStarty({ x: 0, y: 50 });
+
+        const starty2 = new CreateStarty({ x: 100, y: 200 });
+        const starty3 = new CreateStarty({ x: 400, y: 200 });
     }
 
     useEffect(() => {
