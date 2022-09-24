@@ -1,5 +1,6 @@
 import paper from "paper";
 import { v4 as uuidv4 } from "uuid";
+import { startyMovementHandler } from "./CharactersEvent";
 
 // Starty(fish character in game) class
 function Starty (head, isReverse = false) {
@@ -27,6 +28,7 @@ function Starty (head, isReverse = false) {
         this._makeTailFin(this.isReverse);
     };
 
+
     this.getPosition = function () {
         return this.starty.position;
     };
@@ -47,8 +49,11 @@ function Starty (head, isReverse = false) {
 
     this.setReverse = function (isReverse = false) {
         this.isReverse = isReverse;
+        const previousPosition = this.starty.position;
         this.starty.remove();
         this.constructor();
+        this.starty.position = previousPosition;
+
     };
 
     this.getReverse = function () {
@@ -218,6 +223,9 @@ function Starty (head, isReverse = false) {
     };
 
     this.constructor();
+
+    // Setup character movement handler
+    window.addEventListener("keydown", (event) => startyMovementHandler(event, this));
 }
 
 
