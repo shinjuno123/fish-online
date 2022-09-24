@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import paper from "paper";
-import { CreateStarty } from "./Characters";
+import { Starty } from "./Characters";
 import "./css/game.css";
 
 
@@ -13,12 +13,14 @@ function Game () {
         paper.setup(canvas);
 
         // object generation test
-        const starty = new CreateStarty({ x: 0, y: 50 });
-        const starty2 = new CreateStarty({ x: 100, y: 200 });
-        const starty3 = new CreateStarty({ x: 400, y: 200 });
+        const starty = new Starty({ x: 0, y: 50 }, true);
+        const starty2 = new Starty({ x: 100, y: 200 });
+        const starty3 = new Starty({ x: 400, y: 200 });
         starty2.setPosition({ x: 200, y: 500 });
-        starty2.setSize(200, 100);
-        console.log(starty2.getPosition());
+        // starty2.setSize(300, 100);
+        console.log(starty2.id);
+        starty2.setReverse(true);
+        console.log(starty2.id);
 
     }
 
