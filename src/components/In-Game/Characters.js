@@ -1,7 +1,7 @@
 import paper from "paper";
 
 // Starty(fish character in game) class
-function CreateStarty (head) {
+function CreateStarty (head, reverse = false) {
     this.head = head;
     this.starty = new paper.Group();
 
@@ -21,8 +21,22 @@ function CreateStarty (head) {
         this.starty.addChild(startyMouth);
         this._makeBodyFin();
         this._makeTailFin();
-        // this.starty.skew(90, [100, 200]);
-        // this.starty.transform();
+    };
+
+    this.getPosition = function () {
+        const circle = new paper.Path.Circle([this.starty.position.x, this.starty.position.y], 5);
+        circle.fillColor = "black";
+
+        return this.starty.position;
+    };
+
+    this.setPosition = function (point) {
+        this.starty.position.x = point.x;
+        this.starty.position.y = point.y;
+    };
+
+    this.setSize = function (width, height) {
+        this.starty.;
     };
 
 

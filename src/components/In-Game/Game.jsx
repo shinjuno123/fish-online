@@ -16,6 +16,9 @@ function Game () {
         const starty = new CreateStarty({ x: 0, y: 50 });
         const starty2 = new CreateStarty({ x: 100, y: 200 });
         const starty3 = new CreateStarty({ x: 400, y: 200 });
+        starty2.setPosition({ x: 200, y: 500 });
+        console.log(starty2.getPosition());
+
     }
 
     useEffect(() => {
