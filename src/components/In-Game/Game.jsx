@@ -17,6 +17,7 @@ function Game () {
         const starty2 = new CreateStarty({ x: 100, y: 200 });
         const starty3 = new CreateStarty({ x: 400, y: 200 });
         starty2.setPosition({ x: 200, y: 500 });
+        starty2.setSize(200, 100);
         console.log(starty2.getPosition());
 
     }

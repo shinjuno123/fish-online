@@ -24,9 +24,6 @@ function CreateStarty (head, reverse = false) {
     };
 
     this.getPosition = function () {
-        const circle = new paper.Path.Circle([this.starty.position.x, this.starty.position.y], 5);
-        circle.fillColor = "black";
-
         return this.starty.position;
     };
 
@@ -36,7 +33,8 @@ function CreateStarty (head, reverse = false) {
     };
 
     this.setSize = function (width, height) {
-        this.starty.;
+        this.starty.bounds.width = width;
+        this.starty.bounds.height = height;
     };
 
 
