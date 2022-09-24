@@ -13,7 +13,7 @@ function Game () {
         paper.setup(canvas);
 
         // object generation test
-        const starty = new Starty({ x: 0, y: 50 });
+        const starty = new Starty({ x: 200, y: 300 });
 
 
 

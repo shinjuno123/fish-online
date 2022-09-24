@@ -225,7 +225,9 @@ function Starty (head, isReverse = false) {
     this.constructor();
 
     // Setup character movement handler
-    window.addEventListener("keydown", (event) => startyMovementHandler(event, this));
+
+    document.addEventListener("keydown", (event) => startyMovementHandler(event, this));
+    document.addEventListener('keyup', (event) => startyMovementHandler(event, this));
 }
 
 
