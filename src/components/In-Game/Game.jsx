@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from "react";
+import React, { useEffect} from "react";
 import paper from "paper";
 import { Starty } from "./Characters";
 import "./css/game.css";
@@ -6,8 +6,8 @@ import { update } from "./CharactersEvent";
 
 
 
-
 function Game () {
+
 
     function canvasSetup () {
         const canvas = document.getElementById("game-canvas");
@@ -18,16 +18,14 @@ function Game () {
 
     }
 
-    console.log("render");
-
+    
     useEffect(() => {
         canvasSetup();
     });
 
-
     return (
-        <div className="game"  >
-            <canvas id="game-canvas"></canvas>
+        <div className="game" >
+            <canvas width={window.screen.availWidth} height={window.screen.availHeight} id="game-canvas"></canvas>
         </div>
     );
 }
