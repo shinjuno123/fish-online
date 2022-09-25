@@ -1,89 +1,66 @@
+const userState = {velX : 0,velY : 0,speed:2,friction :0.98, keys : {}}
 
-let speed = {
-    up: 1,
-    down: 1,
-    right: 1,
-    left: 1
-};
-
-function startyMovementHandler (event, starty) {
+function startyMovementHandler (event) {
 
 
     event.preventDefault();
 
 
-    if (event.key === "ArrowUp") {
-        moveUp(event.type);
-    } else if (event.key === "ArrowDown") {
-        moveDown(event.type);
-    } else if (event.key === "ArrowLeft") {
-        moveLeft(event.type);
-    } else if (event.key === "ArrowRight") {
-        moveRight(event.type);
+
+    if (event.type === "keydown"){
+        userState.keys[event.key] = true;
     }
 
-
-
-
-
-    // full screen mode
-    if (event.key === "F11") {
-        document.querySelector("html").requestFullscreen();
-    }
-
-    function moveUp (type) {
-        if (type === "keydown") {
-            starty.starty.position.y -= speed.up;
-        }
-
-
-    }
-
-    function moveDown (type) {
-        if (type === "keydown") {
-            starty.starty.position.y += speed.down;
-        }
-    }
-
-    function moveLeft (type) {
-        if (type === "keydown") {
-            starty.setReverse(false);
-            starty.starty.position.x -= speed.left;
-        }
-    }
-
-
-    // const decreaseSpeed = new Promise(function (resolve) {
-    //     resolve(setTimeout(function ()){
-
-    //     });
-    // });
-
-
-    async function moveRight (type) {
-        console.log();
-        if (type === "keydown") {
-            starty.setReverse(true);
-            starty.starty.position.x += speed.right;
-            speed.right += 0.1;
-            console.log(speed.right);
-        }
-        // else if (type === "keyup") {
-        //     while (speed.right > 0) {
-        //         await setTimeout(function () {
-        //             starty.starty.position.x += speed.right;
-        //             speed.right -= 0.1;
-        //         }, 5);
-        //         console.log(speed.right);
-        //     }
-
-        // }
-
+    if (event.type === "keyup"){
+        userState.keys[event.key] = false;
     }
 
 
 }
 
 
+function update(myCharacter){
+    requestAnimationFrame(()=>update(myCharacter));
 
-export { startyMovementHandler };
+    if(userState.keys["ArrowUp"]){
+        if(userState.velY > -userState.speed){
+            userState.velY--;
+        }
+    }
+    if (userState.keys["ArrowDown"]){
+        if(userState.velY < userState.speed){
+            userState.velY++;
+        }
+    }
+    if (userState.keys["ArrowRight"]){
+        myCharacter.setReverse(true);
+        if(userState.velX < userState.speed){
+            userState.velX++
+        }
+    }
+    if (userState.keys["ArrowLeft"]){
+        myCharacter.setReverse(false);
+        if(userState.velX > -userState.speed){
+            userState.velX--
+        }
+    }
+    const nextPosition = myCharacter.getPosition();
+
+    userState.velY *= userState.friction;
+    nextPosition.y += userState.velY;
+
+    userState.velX *= userState.friction;
+    nextPosition.x += userState.velX;
+
+
+    myCharacter.setPosition(nextPosition)
+
+
+
+
+
+}
+
+
+
+export { startyMovementHandler,update };

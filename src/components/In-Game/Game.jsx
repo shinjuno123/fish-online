@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import paper from "paper";
 import { Starty } from "./Characters";
 import "./css/game.css";
+import { update } from "./CharactersEvent";
 
 
 
@@ -14,8 +15,7 @@ function Game () {
 
         // object generation test
         const starty = new Starty({ x: 200, y: 300 });
-
-
+        update(starty);
 
     }
 
