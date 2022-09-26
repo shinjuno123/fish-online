@@ -22,8 +22,8 @@ function startyMovementHandler (event) {
 }
 
 
-function update (myCharacter, mapSize) {
-    requestAnimationFrame(() => update(myCharacter, mapSize));
+function update (myCharacter, mapSize, starty2) {
+    requestAnimationFrame(() => update(myCharacter, mapSize, starty2));
 
     if (userState.keys["ArrowUp"]) {
         if (userState.velY > -userState.speed) {
@@ -85,6 +85,8 @@ function update (myCharacter, mapSize) {
     } else {
         paper.view.scrollBy([userState.velX, userState.velY]);
     }
+
+    console.log(myCharacter.starty.intersects(starty2.starty));
 
 
 

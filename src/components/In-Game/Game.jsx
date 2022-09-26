@@ -22,10 +22,13 @@ function Game () {
 
         const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 });
 
+        const starty2 = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 });
+
+
         starty.setPosition({ x: mapSize[0] / 4, y: mapSize[1] / 4 });
 
         // starty.setPosition([mapSize[0] / 2, mapSize[1] / 2]);
-        update(starty, mapSize);
+        update(starty, mapSize, starty2);
 
 
 
