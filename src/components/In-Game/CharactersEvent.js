@@ -59,22 +59,23 @@ function update (myCharacter, mapSize) {
     // map boundary
     let isWall = { x: false, y: false };
 
-    if (nextPosition.x > mapSize[0] - 5) {
-        nextPosition.x = mapSize[0] - 5;
+    if (nextPosition.x > mapSize[0] - myCharacter.getSize().width / 2) {
+        nextPosition.x = mapSize[0] - myCharacter.getSize().width / 2;
         isWall.x = true;
-    } else if (nextPosition.x <= 5) {
-        nextPosition.x = 5;
+    } else if (nextPosition.x <= myCharacter.getSize().width / 2) {
+        nextPosition.x = myCharacter.getSize().width / 2;
         isWall.x = true;
     }
 
-    if (nextPosition.y > mapSize[1] / 2) {
-        nextPosition.y = mapSize[1] / 2;
+    if (nextPosition.y > mapSize[1] / 2 - myCharacter.getSize().height / 2) {
+        nextPosition.y = mapSize[1] / 2 - myCharacter.getSize().height / 2;
         isWall.y = true;
-    } else if (nextPosition.y <= -mapSize[1] / 2) {
-        nextPosition.y = -mapSize[1] / 2;
+    } else if (nextPosition.y <= -mapSize[1] / 2 + myCharacter.getSize().height / 2) {
+        nextPosition.y = -mapSize[1] / 2 + myCharacter.getSize().height / 2;
         isWall.y = true;
     }
 
+    // Stop moving camera in case of meeting boundary
     if (isWall.x === true && isWall.y === true) {
         paper.view.scrollBy([0, 0]);
     } else if (isWall.x === false && isWall.y === true) {
