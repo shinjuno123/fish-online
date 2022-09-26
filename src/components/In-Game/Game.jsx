@@ -1,9 +1,9 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import paper from "paper";
 import { Starty } from "./Characters";
 import "./css/game.css";
 import { update } from "./CharactersEvent";
-
+import defaultMap from "./Maps";
 
 
 function Game () {
@@ -13,19 +13,38 @@ function Game () {
         const canvas = document.getElementById("game-canvas");
         paper.setup(canvas);
 
-        const starty = new Starty({ x: 200, y: 300 });
-        update(starty);
+
+
+        const mapSize = defaultMap();
+
+        console.log(mapSize);
+
+
+        const starty = new Starty({ x: mapSize[0] / 2 * 1.5, y: -mapSize[1] / 2 });
+        update(starty, mapSize);
+
+
+
+        // paper.view.center.x = mapSize[0] / 2
+
+        paper.view.scrollBy([mapSize[0] / 2, -mapSize[1] / 2]);
+        // console.log([0, mapSize[1] / 2]);
+
+
+
+
+
 
     }
 
-    
+
     useEffect(() => {
         canvasSetup();
     });
 
     return (
-        <div className="game" >
-            <canvas width={window.screen.availWidth} height={window.screen.availHeight} id="game-canvas"></canvas>
+        <div style={ { width: window.screen.availWidth + "px", height: window.screen.availHeight + "px" } } className="game" >
+            <canvas id="game-canvas"></canvas>
         </div>
     );
 }

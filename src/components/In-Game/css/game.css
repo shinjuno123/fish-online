@@ -9,7 +9,12 @@ body{
 /* Scale canvas with resize attribute to full size */
 
 .game{
-    height:fit-content;
+
     background-color: white;
+}
+
+.game canvas{
+    height: 100%;
+    width: 100%;
 }
 
