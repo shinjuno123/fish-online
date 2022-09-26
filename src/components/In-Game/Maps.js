@@ -1,8 +1,13 @@
 import paper from "paper";
 
-function defaultMap () {
+function testMap () {
     // map Size setup
     const mapSize = [window.screen.availWidth * 2, window.screen.availHeight * 2];
+
+    const rect = new paper.Path.Rectangle([0, -mapSize[1] / 2], [mapSize[0], mapSize[1]]);
+
+    rect.strokeColor = "black";
+    rect.strokeWidth = "3";
 
     // Map camera movement
     const screen1 = new paper.PointText();
@@ -34,4 +39,4 @@ function defaultMap () {
 
 
 
-export default defaultMap;
+export default testMap;

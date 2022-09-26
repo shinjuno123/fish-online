@@ -1,4 +1,6 @@
-const userState = { velX: 0, velY: 0, speed: 2, friction: 0.98, keys: {} };
+import paper from "paper";
+
+const userState = { velX: 0, velY: 0, speed: 4, friction: 0.98, keys: {} };
 
 function startyMovementHandler (event) {
 
@@ -54,22 +56,34 @@ function update (myCharacter, mapSize) {
     nextPosition.x += userState.velX;
 
 
-
     // map boundary
+    let isWall = { x: false, y: false };
+
     if (nextPosition.x > mapSize[0] - 5) {
         nextPosition.x = mapSize[0] - 5;
+        isWall.x = true;
     } else if (nextPosition.x <= 5) {
         nextPosition.x = 5;
+        isWall.x = true;
     }
 
     if (nextPosition.y > mapSize[1] / 2) {
         nextPosition.y = mapSize[1] / 2;
+        isWall.y = true;
     } else if (nextPosition.y <= -mapSize[1] / 2) {
         nextPosition.y = -mapSize[1] / 2;
+        isWall.y = true;
     }
 
-
-    myCharacter.setPosition(nextPosition);
+    if (isWall.x === true && isWall.y === true) {
+        paper.view.scrollBy([0, 0]);
+    } else if (isWall.x === false && isWall.y === true) {
+        paper.view.scrollBy([userState.velX, 0]);
+    } else if (isWall.x === true && isWall.y === false) {
+        paper.view.scrollBy([0, userState.velY]);
+    } else {
+        paper.view.scrollBy([userState.velX, userState.velY]);
+    }
 
 
 

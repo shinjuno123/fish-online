@@ -3,7 +3,7 @@ import paper from "paper";
 import { Starty } from "./Characters";
 import "./css/game.css";
 import { update } from "./CharactersEvent";
-import defaultMap from "./Maps";
+import testMap from "./Maps";
 
 
 function Game () {
@@ -15,19 +15,21 @@ function Game () {
 
 
 
-        const mapSize = defaultMap();
+        const mapSize = testMap();
 
         console.log(mapSize);
 
 
-        const starty = new Starty({ x: mapSize[0] / 2 * 1.5, y: -mapSize[1] / 2 });
+        const starty = new Starty({ x: mapSize[0] / 4 - 100, y: mapSize[1] / 4 });
+
+        // starty.setPosition([mapSize[0] / 2, mapSize[1] / 2]);
         update(starty, mapSize);
 
 
 
-        // paper.view.center.x = mapSize[0] / 2
+        // paper.view.center.x = mapSize[0] / 2;
 
-        paper.view.scrollBy([mapSize[0] / 2, -mapSize[1] / 2]);
+        // paper.view.scrollBy([mapSize[0] / 2, -mapSize[1] / 2]);
         // console.log([0, mapSize[1] / 2]);
 
 
