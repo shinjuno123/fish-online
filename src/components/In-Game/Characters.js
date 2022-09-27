@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import { startyMovementHandler } from "./CharactersEvent";
 
 // Starty(fish character in game) class
-function Starty (head, isReverse = false) {
-    this.head = head;
+function Starty (center, isReverse = false) {
+    this.head = { x: center.x - 100, y: center.y };
     this.starty = new paper.Group();
     this.isReverse = isReverse;
     this.id = uuidv4();
