@@ -5,14 +5,14 @@ import { startyMovementHandler } from "./CharactersEvent";
 // Starty(fish character in game) class
 function Starty (center, isReverse = false, size) {
     this.head = { x: center.x - 100, y: center.y };
-    this.starty = new paper.Group();
+    this.group = new paper.Group();
     this.isReverse = isReverse;
     this.id = uuidv4();
     this.ratio = { width: 1, height: 0.378306 };
     this.size = size;
 
     this.constructor = function () {
-        this.starty = new paper.Group();
+        this.group = new paper.Group();
         const startyBody = this._makeBody(this.isReverse);
         const startyTail = this._makeTail(this.isReverse);
         const startyFin = this._makeFin(this.isReverse);
@@ -20,46 +20,46 @@ function Starty (center, isReverse = false, size) {
         const startyMouth = this._makeMouth(this.isReverse);
 
 
-        this.starty.addChild(startyBody);
-        this.starty.addChild(startyTail);
-        this.starty.addChild(startyFin);
-        this.starty.addChild(startyEye);
-        this.starty.addChild(startyPupil);
-        this.starty.addChild(startyMouth);
+        this.group.addChild(startyBody);
+        this.group.addChild(startyTail);
+        this.group.addChild(startyFin);
+        this.group.addChild(startyEye);
+        this.group.addChild(startyPupil);
+        this.group.addChild(startyMouth);
         this._makeBodyFin(this.isReverse);
         this._makeTailFin(this.isReverse);
 
-        this.starty.bounds.width = this.ratio.width * this.size;
-        this.starty.bounds.height = this.ratio.height * this.size;
-        this.starty.position.x = center.x;
-        this.starty.position.y = center.y;
+        this.group.bounds.width = this.ratio.width * this.size;
+        this.group.bounds.height = this.ratio.height * this.size;
+        this.group.position.x = center.x;
+        this.group.position.y = center.y;
     };
 
 
     this.getPosition = function () {
-        return this.starty.position;
+        return this.group.position;
     };
 
     this.setPosition = function (point) {
-        this.starty.position.x = point.x;
-        this.starty.position.y = point.y;
+        this.group.position.x = point.x;
+        this.group.position.y = point.y;
     };
 
     this.setSize = function (width, height) {
-        this.starty.bounds.width = width;
-        this.starty.bounds.height = height;
+        this.group.bounds.width = width;
+        this.group.bounds.height = height;
     };
 
     this.getSize = function () {
-        return this.starty.bounds;
+        return this.group.bounds;
     };
 
     this.setReverse = function (isReverse = false) {
         this.isReverse = isReverse;
-        const previousPosition = this.starty.position;
-        this.starty.remove();
+        const previousPosition = this.group.position;
+        this.group.remove();
         this.constructor();
-        this.starty.position = previousPosition;
+        this.group.position = previousPosition;
 
     };
 
@@ -208,7 +208,7 @@ function Starty (center, isReverse = false, size) {
             });
             startyBodyFin.strokeColor = "black";
             startyBodyFin.strokeWidth = 2;
-            this.starty.addChild(startyBodyFin);
+            this.group.addChild(startyBodyFin);
         }
     };
 
@@ -224,7 +224,7 @@ function Starty (center, isReverse = false, size) {
             startyTailFin.strokeColor = "black";
             startyTailFin.rotate(isReverse ? -i * 2 : i * 2, isReverse ? startyTailFin.bounds.bottomRight : startyTailFin.bounds.bottomLeft);
 
-            this.starty.addChild(startyTailFin);
+            this.group.addChild(startyTailFin);
 
         }
     };

@@ -20,7 +20,7 @@ function Game () {
 
         console.log(mapSize);
 
-        const mob1 = new Mob1({ x: 93.75, y: 63.3 }, true, 65);
+        const mob1 = new Mob1({ x: 93.75, y: 63.3 }, true, 60);
 
         const mobs = [mob1];
 

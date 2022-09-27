@@ -86,12 +86,12 @@ function update (myCharacter, mapSize, mobs) {
     }
 
     mobs = mobs.filter(function (mob) {
-        const isIntersects = myCharacter.starty.intersects(mob.mob1);
+        const isIntersects = myCharacter.group.intersects(mob.group);
         if (isIntersects) {
             if (mob.size < myCharacter.size) {
                 console.log("You can eat!");
-                myCharacter.size += (myCharacter.size - mob.size) * 0.5;
-                mob.mob1.remove();
+                myCharacter.size += mob.size * 0.01;
+                mob.group.remove();
 
 
                 return;
@@ -103,8 +103,6 @@ function update (myCharacter, mapSize, mobs) {
     });
 
     console.log(myCharacter.size);
-
-
 
 
     requestAnimationFrame(() => update(myCharacter, mapSize, mobs));

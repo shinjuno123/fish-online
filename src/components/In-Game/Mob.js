@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 function Mob1 (center, reverse = true, size) {
     this.center = center;
-    this.mob1 = new paper.Group();
+    this.group = new paper.Group();
     this.id = uuidv4();
     this.reverse = reverse;
     this.size = size;
@@ -15,18 +15,18 @@ function Mob1 (center, reverse = true, size) {
         const { eye, pupil } = this._makeEyeAndPupil();
 
 
-        this.mob1.addChild(this._makeFin());
-        this.mob1.addChild(this.makeBody());
-        this.mob1.addChild(bodyPattern1);
-        this.mob1.addChild(bodyPattern2);
-        this.mob1.addChild(bodyPattern3);
-        this.mob1.addChild(eye);
-        this.mob1.addChild(pupil);
+        this.group.addChild(this._makeFin());
+        this.group.addChild(this.makeBody());
+        this.group.addChild(bodyPattern1);
+        this.group.addChild(bodyPattern2);
+        this.group.addChild(bodyPattern3);
+        this.group.addChild(eye);
+        this.group.addChild(pupil);
 
-        this.mob1.bounds.width = this.ratio.width * this.size;
-        this.mob1.bounds.height = this.ratio.height * this.size;
-        this.mob1.position.x = center.x;
-        this.mob1.position.y = center.y;
+        this.group.bounds.width = this.ratio.width * this.size;
+        this.group.bounds.height = this.ratio.height * this.size;
+        this.group.position.x = center.x;
+        this.group.position.y = center.y;
     };
 
 
