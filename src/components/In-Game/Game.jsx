@@ -20,7 +20,7 @@ function Game () {
 
         console.log(mapSize);
 
-        Mob1();
+        new Mob1({ x: 300, y: 300 });
 
 
         const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 });
