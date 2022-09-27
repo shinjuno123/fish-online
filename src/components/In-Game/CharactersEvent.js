@@ -77,13 +77,13 @@ function update (myCharacter, mapSize, starty2) {
 
     // Stop moving camera in case of meeting boundary
     if (isWall.x === true && isWall.y === true) {
-        paper.view.scrollBy([0, 0]);
+        paper.view.translate([0, 0]);
     } else if (isWall.x === false && isWall.y === true) {
-        paper.view.scrollBy([userState.velX, 0]);
+        paper.view.translate([-userState.velX, 0]);
     } else if (isWall.x === true && isWall.y === false) {
-        paper.view.scrollBy([0, userState.velY]);
+        paper.view.translate([0, -userState.velY]);
     } else {
-        paper.view.scrollBy([userState.velX, userState.velY]);
+        paper.view.translate([-userState.velX, -userState.velY]);
     }
 
     console.log(myCharacter.starty.intersects(starty2.starty));
