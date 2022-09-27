@@ -33,6 +33,8 @@ function testMap () {
     screen4.fontSize = 60;
     screen4.bounds.center = [window.screen.availWidth * 1.5, window.screen.availHeight / 2];
 
+
+    new Rock(500,500);
     return mapSize;
 }
 
