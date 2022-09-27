@@ -1,4 +1,5 @@
 import paper from "paper";
+import Rock from "./objects/rock";
 
 function testMap () {
     // map Size setup

@@ -8,5 +8,5 @@
 
 26th September 2022
 - Complemented implementing a test map and camera movement that follows user's character fish and items interaction with each other.
-- A plan since 27th Sep 2022 : Implement a mob design and user character fish's sizeup when the user fish eats mob fishes that are smaller than user's one and rock design that is for obstacles. 
+- A plan since 27th Sep 2022 : Implement a mob design and user character fish's sizeup when the user fish eats mob fishes that are smaller than user's one and rock design(Decided to use Image) that is for obstacles. 
 

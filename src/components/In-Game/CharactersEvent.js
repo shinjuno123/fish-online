@@ -2,6 +2,9 @@ import paper from "paper";
 
 const userState = { velX: 0, velY: 0, speed: 4, friction: 0.98, keys: {} };
 
+
+let isGameOver = false;
+
 function startyMovementHandler (event) {
 
 
@@ -85,16 +88,20 @@ function update (myCharacter, mapSize, mobs) {
         paper.view.translate([-userState.velX, -userState.velY]);
     }
 
+
     mobs = mobs.filter(function (mob) {
         const isIntersects = myCharacter.group.intersects(mob.group);
         if (isIntersects) {
-            if (mob.size < myCharacter.size) {
+            if (mob.size <= myCharacter.size) {
                 console.log("You can eat!");
                 myCharacter.size += mob.size * 0.01;
                 mob.group.remove();
-
-
                 return;
+            } else {
+                mob.size += myCharacter.size * 0.01;
+                myCharacter.group.remove();
+                isGameOver = true;
+                return mob;
             }
         } else {
             return mob;
@@ -102,14 +109,21 @@ function update (myCharacter, mapSize, mobs) {
 
     });
 
-    console.log(myCharacter.size);
 
 
-    requestAnimationFrame(() => update(myCharacter, mapSize, mobs));
+    if (isGameOver) {
+        cancelAnimationFrame(handleEvent);
+    } else {
+        requestAnimationFrame(handleEvent);
+    }
 
 
+    function handleEvent () {
+        return update(myCharacter, mapSize, mobs);
+    }
 
 }
+
 
 
 
