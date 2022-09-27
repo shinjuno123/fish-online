@@ -7,7 +7,7 @@ function Mob1 (center, reverse = true, size) {
     this.id = uuidv4();
     this.reverse = reverse;
     this.size = size;
-    this.ratio = { width: 1.758, height: 1 };
+    this.ratio = { width: 1, height: 0.5688288 };
 
 
     this.constructor = function () {
@@ -25,6 +25,8 @@ function Mob1 (center, reverse = true, size) {
 
         this.mob1.bounds.width = this.ratio.width * this.size;
         this.mob1.bounds.height = this.ratio.height * this.size;
+        this.mob1.position.x = center.x;
+        this.mob1.position.y = center.y;
     };
 
 

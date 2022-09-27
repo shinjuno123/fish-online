@@ -20,14 +20,17 @@ function Game () {
 
         console.log(mapSize);
 
-        const mob1 = new Mob1({ x: 93.75, y: 63.3 }, true, 100);
+        const mob1 = new Mob1({ x: 93.75, y: 63.3 }, true, 65);
+
+        const mobs = [mob1];
 
 
-        const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 }, false, 200);
+        const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 }, false, 70);
 
 
 
-        update(starty, mapSize);
+
+        update(starty, mapSize, mobs);
 
 
 

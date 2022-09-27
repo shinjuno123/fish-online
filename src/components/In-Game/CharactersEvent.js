@@ -22,8 +22,7 @@ function startyMovementHandler (event) {
 }
 
 
-function update (myCharacter, mapSize) {
-    requestAnimationFrame(() => update(myCharacter, mapSize));
+function update (myCharacter, mapSize, mobs) {
 
     if (userState.keys["ArrowUp"]) {
         if (userState.velY > -userState.speed) {
@@ -86,9 +85,29 @@ function update (myCharacter, mapSize) {
         paper.view.translate([-userState.velX, -userState.velY]);
     }
 
-    // console.log(myCharacter.starty.intersects(starty2.starty));
+    mobs = mobs.filter(function (mob) {
+        const isIntersects = myCharacter.starty.intersects(mob.mob1);
+        if (isIntersects) {
+            if (mob.size < myCharacter.size) {
+                console.log("You can eat!");
+                myCharacter.size += (myCharacter.size - mob.size) * 0.5;
+                mob.mob1.remove();
 
 
+                return;
+            }
+        } else {
+            return mob;
+        }
+
+    });
+
+    console.log(myCharacter.size);
+
+
+
+
+    requestAnimationFrame(() => update(myCharacter, mapSize, mobs));
 
 
 

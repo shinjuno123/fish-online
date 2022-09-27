@@ -29,11 +29,10 @@ function Starty (center, isReverse = false, size) {
         this._makeBodyFin(this.isReverse);
         this._makeTailFin(this.isReverse);
 
-        console.log(this.size);
-
         this.starty.bounds.width = this.ratio.width * this.size;
         this.starty.bounds.height = this.ratio.height * this.size;
-        console.log(this.starty.bounds);
+        this.starty.position.x = center.x;
+        this.starty.position.y = center.y;
     };
 
 
