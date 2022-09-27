@@ -11,6 +11,7 @@ function Mob1 (center, reverse = true, size) {
 
 
     this.constructor = function () {
+        this.group = new paper.Group();
         const { bodyPattern1, bodyPattern2, bodyPattern3 } = this._makeBodypatterns();
         const { eye, pupil } = this._makeEyeAndPupil();
 
@@ -71,6 +72,19 @@ function Mob1 (center, reverse = true, size) {
 
 
         return fin;
+    };
+
+    this.setReverse = function (isReverse = false) {
+        this.isReverse = isReverse;
+        const previousPosition = this.group.position;
+        this.group.remove();
+        this.constructor();
+        this.group.position = previousPosition;
+
+    };
+
+    this.getReverse = function () {
+        return this.isReverse;
     };
 
     this.makeBody = function () {
