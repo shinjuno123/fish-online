@@ -3,11 +3,13 @@ import { v4 as uuidv4 } from "uuid";
 import { startyMovementHandler } from "./CharactersEvent";
 
 // Starty(fish character in game) class
-function Starty (center, isReverse = false) {
+function Starty (center, isReverse = false, size) {
     this.head = { x: center.x - 100, y: center.y };
     this.starty = new paper.Group();
     this.isReverse = isReverse;
     this.id = uuidv4();
+    this.ratio = { width: 1, height: 0.378306 };
+    this.size = size;
 
     this.constructor = function () {
         this.starty = new paper.Group();
@@ -26,6 +28,12 @@ function Starty (center, isReverse = false) {
         this.starty.addChild(startyMouth);
         this._makeBodyFin(this.isReverse);
         this._makeTailFin(this.isReverse);
+
+        console.log(this.size);
+
+        this.starty.bounds.width = this.ratio.width * this.size;
+        this.starty.bounds.height = this.ratio.height * this.size;
+        console.log(this.starty.bounds);
     };
 
 

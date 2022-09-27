@@ -20,25 +20,14 @@ function Game () {
 
         console.log(mapSize);
 
-        new Mob1({ x: 300, y: 300 });
+        const mob1 = new Mob1({ x: 93.75, y: 63.3 }, true, 100);
 
 
-        const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 });
+        const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 }, false, 200);
 
 
 
-        // starty.setPosition([mapSize[0] / 2, mapSize[1] / 2]);
         update(starty, mapSize);
-
-
-
-        // paper.view.center.x = mapSize[0] / 2;
-
-        // paper.view.scrollBy([mapSize[0] / 2, -mapSize[1] / 2]);
-        // console.log([0, mapSize[1] / 2]);
-
-
-
 
 
 
