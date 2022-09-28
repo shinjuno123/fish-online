@@ -16,7 +16,7 @@ function Game () {
 
 
 
-        const mapSize = testMap();
+        const { mapSize, obstacles } = testMap();
 
         console.log(mapSize);
 
@@ -30,7 +30,7 @@ function Game () {
 
 
 
-        update(starty, mapSize, mobs);
+        update(starty, mapSize, mobs, obstacles);
 
 
 

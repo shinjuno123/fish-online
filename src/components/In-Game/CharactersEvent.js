@@ -10,7 +10,6 @@ function startyMovementHandler (event) {
 
     event.preventDefault();
 
-    console.log(event.key);
     if (event.type === "keydown") {
         userState.keys[event.key] = true;
     }
@@ -18,15 +17,14 @@ function startyMovementHandler (event) {
     if (event.type === "keyup") {
         userState.keys[event.key] = false;
     }
-
-
-
 }
 
 
-function update (myCharacter, mapSize, mobs) {
+function update (myCharacter, mapSize, mobs, obstacles) {
     // simulate key board
-    // document.body.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp'}));
+    // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+
+    // Recognize key board input
     if (userState.keys["ArrowUp"]) {
         if (userState.velY > -userState.speed) {
             userState.velY--;
@@ -49,7 +47,12 @@ function update (myCharacter, mapSize, mobs) {
             userState.velX--;
         }
     }
+
     const nextPosition = myCharacter.getPosition();
+
+
+
+    // move as pressing keyboard arrow buttons
 
     userState.velY *= userState.friction;
     nextPosition.y += userState.velY;
@@ -58,8 +61,43 @@ function update (myCharacter, mapSize, mobs) {
     nextPosition.x += userState.velX;
 
 
-    // map boundary
-    let isWall = { x: false, y: false };
+    // when contacting to obstacles, user's stops moving toward obstacles
+    obstacles = obstacles.map(function (obstacle) {
+        for (let pathItem of myCharacter.group.getItems()) {
+            const point = obstacle.group.getItem().getIntersections(pathItem)[0];
+            if (point) {
+                const obstaclePosition = { left: false, right: false, up: false, down: false };
+                // object's position depending on the relative position of fish
+                if (point.point.x - nextPosition.x > 0) {
+                    obstaclePosition.right = true;
+                }
+                if (point.point.x - nextPosition.x < 0) {
+                    obstaclePosition.left = true;
+                }
+
+                if (point.point.y - nextPosition.y > 0) {
+                    obstaclePosition.down = true;
+                }
+
+                if (point.point.y - nextPosition.y < 0) {
+                    obstaclePosition.up = true;
+                }
+
+
+
+                console.log(obstaclePosition);
+            }
+
+        }
+        return obstacle;
+
+    });
+
+
+
+
+    // Recognize map boundary and check if it is wall 
+    const isWall = { x: false, y: false };
 
     if (nextPosition.x > mapSize[0] - myCharacter.getSize().width / 2) {
         nextPosition.x = mapSize[0] - myCharacter.getSize().width / 2;
@@ -77,6 +115,8 @@ function update (myCharacter, mapSize, mobs) {
         isWall.y = true;
     }
 
+
+
     // Stop moving camera in case of meeting boundary
     if (isWall.x === true && isWall.y === true) {
         paper.view.translate([0, 0]);
@@ -89,6 +129,8 @@ function update (myCharacter, mapSize, mobs) {
     }
 
 
+    // If mob is bigger than user's then game over
+    // If not user's can eat mob and grow bigger
     mobs = mobs.filter(function (mob) {
         const isIntersects = myCharacter.group.intersects(mob.group);
         if (isIntersects) {
@@ -109,28 +151,11 @@ function update (myCharacter, mapSize, mobs) {
 
     });
 
-    const keyBoardEvent = document.createEvent('KeyboardEvent');
-    const initMethod = typeof KeyboardEvent.initKeyboardEvent !== 'undefined' ? 'initKeyboardEvent' : 'initKeyEvent';
-
-    // keyBoardEvent[initMethod](
-    //     'keydown', // event type: keydown, keyup, keypress
-    //     true, // bubbles
-    //     true, // cancelable
-    //     window, // view: should be window
-    //     false, // ctrlKey
-    //     false, // altKey
-    //     false, // shiftKey
-    //     false, // metaKey
-    //     40, // keyCode: unsigned long - the virtual key code, else 0
-    //     0, // charCode: unsigned long - the Unicode character associated with the depressed key, else 0
-    // )
-
-    
-
-    window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp'}));
-    window.dispatchEvent(new KeyboardEvent('keyup',{key:'ArrowUp'}));
 
 
+
+
+    // Check if it is game over or not
     if (isGameOver) {
         cancelAnimationFrame(handleEvent);
     } else {
@@ -138,8 +163,10 @@ function update (myCharacter, mapSize, mobs) {
     }
 
 
+
+    // Event Handler to use in requestAnimationFrame
     function handleEvent () {
-        return update(myCharacter, mapSize, mobs);
+        return update(myCharacter, mapSize, mobs, obstacles);
     }
 
 }

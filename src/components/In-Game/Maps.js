@@ -1,9 +1,11 @@
 import paper from "paper";
-import Rock from "./objects/rock";
+import Stone from "./objects/rock";
 
 function testMap () {
     // map Size setup
     const mapSize = [window.screen.availWidth * 2, window.screen.availHeight * 2];
+
+    const obstacles = [];
 
     const rect = new paper.Path.Rectangle([0, -mapSize[1] / 2], [mapSize[0], mapSize[1]]);
 
@@ -33,9 +35,8 @@ function testMap () {
     screen4.fontSize = 60;
     screen4.bounds.center = [window.screen.availWidth * 1.5, window.screen.availHeight / 2];
 
-
-    new Rock(500,500);
-    return mapSize;
+    obstacles.push(new Stone(window.screen.availWidth * 0.8, 0));
+    return { mapSize: mapSize, obstacles: obstacles };
 }
 
 
