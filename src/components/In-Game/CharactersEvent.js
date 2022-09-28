@@ -30,27 +30,23 @@ function update(myCharacter, mapSize, mobs, obstacles) {
     // Recognize key board input
     if (userState.keys["ArrowUp"]) {
         if (userState.velY > -userState.speed) {
-            console.log("ArrowUp")
             userState.velY--;
         }
     }
     if (userState.keys["ArrowDown"]) {
         if (userState.velY < userState.speed) {
-            console.log("ArrowDown")
             userState.velY++;
         }
     }
     if (userState.keys["ArrowRight"]) {
         myCharacter.setReverse(true);
         if (userState.velX < userState.speed) {
-            console.log("ArrowRight")
             userState.velX++;
         }
     }
     if (userState.keys["ArrowLeft"]) {
         myCharacter.setReverse(false);
         if (userState.velX > -userState.speed) {
-            console.log("ArrowLeft");
             userState.velX--;
         }
     }
@@ -86,25 +82,25 @@ function update(myCharacter, mapSize, mobs, obstacles) {
             const point = obstacle.group.getItem().getIntersections(pathItem)[0];
             if (point) {
                 if (point.point.x - nextPosition.x > 0) {
-                    nextPosition.x = nextPosition.x - 3;
-                    userState.velX -= 3;
+                    nextPosition.x = nextPosition.x - 1;
+                    userState.velX -= 1;
                     isXChanged = true;
                 }
                 if (point.point.x - nextPosition.x < 0) {
-                    nextPosition.x = nextPosition.x + 3;
-                    userState.velX += 3;
+                    nextPosition.x = nextPosition.x + 1;
+                    userState.velX += 1;
                     isXChanged = true;
                 }
 
                 if (point.point.y - nextPosition.y > 0) {
-                    nextPosition.y = nextPosition.y - 3;
-                    userState.velY -= 3;
+                    nextPosition.y = nextPosition.y - 1;
+                    userState.velY -= 1;
                     isYChanged = true;
                 }
 
                 if (point.point.y - nextPosition.y < 0) {
-                    nextPosition.y = nextPosition.y + 3;
-                    userState.velY += 3;
+                    nextPosition.y = nextPosition.y + 1;
+                    userState.velY += 1;
                     isYChanged = true;
                 }
             }
