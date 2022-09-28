@@ -1,11 +1,12 @@
 import paper from "paper";
+// object's position depending on the relative position of fish
 
-const userState = { velX: 0, velY: 0, speed: 4, friction: 0.98, keys: {} };
+const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.98, keys: {} };
 
 
 let isGameOver = false;
 
-function startyMovementHandler (event) {
+function startyMovementHandler(event) {
 
 
     event.preventDefault();
@@ -19,40 +20,55 @@ function startyMovementHandler (event) {
     }
 }
 
-
-function update (myCharacter, mapSize, mobs, obstacles) {
+function update(myCharacter, mapSize, mobs, obstacles) {
     // simulate key board
     // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+
+
+
 
     // Recognize key board input
     if (userState.keys["ArrowUp"]) {
         if (userState.velY > -userState.speed) {
+            console.log("ArrowUp")
             userState.velY--;
         }
     }
     if (userState.keys["ArrowDown"]) {
         if (userState.velY < userState.speed) {
+            console.log("ArrowDown")
             userState.velY++;
         }
     }
     if (userState.keys["ArrowRight"]) {
         myCharacter.setReverse(true);
         if (userState.velX < userState.speed) {
+            console.log("ArrowRight")
             userState.velX++;
         }
     }
     if (userState.keys["ArrowLeft"]) {
         myCharacter.setReverse(false);
         if (userState.velX > -userState.speed) {
+            console.log("ArrowLeft");
             userState.velX--;
         }
     }
 
     const nextPosition = myCharacter.getPosition();
+    const prevPosition = myCharacter.getPosition();
+    
 
 
 
-    // move as pressing keyboard arrow buttons
+
+
+
+    // when contacting to obstacles, user's stops moving toward obstacles
+
+
+
+
 
     userState.velY *= userState.friction;
     nextPosition.y += userState.velY;
@@ -60,38 +76,45 @@ function update (myCharacter, mapSize, mobs, obstacles) {
     userState.velX *= userState.friction;
     nextPosition.x += userState.velX;
 
+    // move as pressing keyboard arrow buttons
 
-    // when contacting to obstacles, user's stops moving toward obstacles
+    let isXChanged = false;
+    let isYChanged = false;
+
     obstacles = obstacles.map(function (obstacle) {
         for (let pathItem of myCharacter.group.getItems()) {
             const point = obstacle.group.getItem().getIntersections(pathItem)[0];
             if (point) {
-                const obstaclePosition = { left: false, right: false, up: false, down: false };
-                // object's position depending on the relative position of fish
                 if (point.point.x - nextPosition.x > 0) {
-                    obstaclePosition.right = true;
+                    nextPosition.x = nextPosition.x - 3;
+                    userState.velX -= 3;
+                    isXChanged = true;
                 }
                 if (point.point.x - nextPosition.x < 0) {
-                    obstaclePosition.left = true;
+                    nextPosition.x = nextPosition.x + 3;
+                    userState.velX += 3;
+                    isXChanged = true;
                 }
 
                 if (point.point.y - nextPosition.y > 0) {
-                    obstaclePosition.down = true;
+                    nextPosition.y = nextPosition.y - 3;
+                    userState.velY -= 3;
+                    isYChanged = true;
                 }
 
                 if (point.point.y - nextPosition.y < 0) {
-                    obstaclePosition.up = true;
+                    nextPosition.y = nextPosition.y + 3;
+                    userState.velY += 3;
+                    isYChanged = true;
                 }
-
-
-
-                console.log(obstaclePosition);
             }
 
         }
         return obstacle;
 
     });
+
+
 
 
 
@@ -127,6 +150,14 @@ function update (myCharacter, mapSize, mobs, obstacles) {
     } else {
         paper.view.translate([-userState.velX, -userState.velY]);
     }
+
+    if (isXChanged){
+        userState.velX = 0;
+    }
+    if (isYChanged){
+        userState.velY = 0;
+    }
+
 
 
     // If mob is bigger than user's then game over
@@ -165,7 +196,7 @@ function update (myCharacter, mapSize, mobs, obstacles) {
 
 
     // Event Handler to use in requestAnimationFrame
-    function handleEvent () {
+    function handleEvent() {
         return update(myCharacter, mapSize, mobs, obstacles);
     }
 
