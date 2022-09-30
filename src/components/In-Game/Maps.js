@@ -1,5 +1,5 @@
 import paper from "paper";
-import Stone from "./objects/rock";
+import Stone, { SideStone } from "./objects/rock";
 
 function testMap () {
     // map Size setup
@@ -35,8 +35,24 @@ function testMap () {
     screen4.fontSize = 60;
     screen4.bounds.center = [window.screen.availWidth * 1.5, window.screen.availHeight / 2];
 
-    obstacles.push(new Stone(window.screen.availWidth * 0.8, 0));
-    return { mapSize: mapSize, obstacles: obstacles };
+
+    // setup center Stone
+    obstacles.push(new Stone(window.screen.availWidth, 0, 2.5));
+
+
+    // setup Stones at the 4 egdes of map
+    obstacles.push(new SideStone(window.screen.availWidth / 2, window.screen.availHeight / 2, 0, false));
+    obstacles.push(new SideStone(window.screen.availWidth * 1.5, window.screen.availHeight / 2, 0, true));
+    obstacles.push(new SideStone(window.screen.availWidth / 2, -window.screen.availHeight / 2, 180, true));
+    obstacles.push(new SideStone(window.screen.availWidth * 1.5, -window.screen.availHeight / 2, 180, false));
+
+
+    // Response place setup
+    const userResponsePoints = [93.75, 63.3];
+    const mobsResponsePoints = [[60, 0], [window.screen.availWidth * 2 - 60, 0]];
+
+
+    return { mapSize: mapSize, obstacles: obstacles, userResponsePoints: userResponsePoints, mobsResponsePoints: mobsResponsePoints };
 }
 
 

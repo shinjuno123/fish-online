@@ -16,7 +16,7 @@ function Game () {
 
 
 
-        const { mapSize, obstacles } = testMap();
+        const { mapSize, obstacles, userResponsePoints, mobsResponsePoints } = testMap();
 
         console.log(mapSize);
 

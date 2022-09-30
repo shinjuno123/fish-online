@@ -6,7 +6,7 @@ const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.9
 
 let isGameOver = false;
 
-function startyMovementHandler(event) {
+function startyMovementHandler (event) {
 
 
     event.preventDefault();
@@ -20,7 +20,7 @@ function startyMovementHandler(event) {
     }
 }
 
-function update(myCharacter, mapSize, mobs, obstacles) {
+function update (myCharacter, mapSize, mobs, obstacles) {
     // simulate key board
     // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
 
@@ -52,8 +52,8 @@ function update(myCharacter, mapSize, mobs, obstacles) {
     }
 
     const nextPosition = myCharacter.getPosition();
-    const prevPosition = myCharacter.getPosition();
-    
+
+
 
 
 
@@ -147,10 +147,10 @@ function update(myCharacter, mapSize, mobs, obstacles) {
         paper.view.translate([-userState.velX, -userState.velY]);
     }
 
-    if (isXChanged){
+    if (isXChanged) {
         userState.velX = 0;
     }
-    if (isYChanged){
+    if (isYChanged) {
         userState.velY = 0;
     }
 
@@ -192,7 +192,7 @@ function update(myCharacter, mapSize, mobs, obstacles) {
 
 
     // Event Handler to use in requestAnimationFrame
-    function handleEvent() {
+    function handleEvent () {
         return update(myCharacter, mapSize, mobs, obstacles);
     }
 
