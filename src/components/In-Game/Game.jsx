@@ -4,7 +4,6 @@ import { Starty } from "./Characters";
 import "./css/game.css";
 import { update } from "./CharactersEvent";
 import testMap from "./Maps";
-import SeaAnemone from "./objects/SeaAnemone";
 
 
 function Game () {
@@ -25,7 +24,7 @@ function Game () {
 
         const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 }, false, 70);
 
-        paper.view.zoom = 0.3;
+        // paper.view.zoom = 0.3;
 
 
         update(starty, mapSize, [], obstacles, responsePoints);

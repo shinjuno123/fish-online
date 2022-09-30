@@ -1,6 +1,7 @@
 import paper from "paper";
 import Stone, { SideStone } from "./objects/rock";
 import SeaAnemone from "./objects/SeaAnemone";
+import Seaweed from "./objects/Seaweed";
 
 function testMap () {
     // map Size setup
@@ -55,6 +56,8 @@ function testMap () {
     const responsePoints = { userResponsePoints: userResponsePoints, mobsResponsePoints: mobsResponsePoints };
 
 
+
+    // Setup seaAnemons
     const seaAnemone1 = new SeaAnemone(500, 610, 1.5, 0);
     const seaAnemone2 = new SeaAnemone(300, 550, 1, 0);
     const seaAnemone3 = new SeaAnemone(990, 760, 1, 40);
@@ -68,6 +71,8 @@ function testMap () {
     const seaAnemone11 = new SeaAnemone(900, -700, 1.1, 140);
     const seaAnemone12 = new SeaAnemone(900, -200, 2, -20);
 
+
+    new Seaweed(200, 200, 1, true);
 
     return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints };
 }

@@ -26,17 +26,17 @@ function SeaAnemone (x, y, scale, degree) {
     for (let i = 0; i < 10; i++) {
         const tentaclone = tentacle.clone();
         tentaclone.bounds.height *= 0.7;
-        if (i == 3) {
+        if (i === 3) {
             tentaclone.rotate(i * 36, [tentacle.bounds.bottomCenter.x - 5, tentacle.bounds.bottomCenter.y - 10]);
         }
-        else if (i == 4) {
+        else if (i === 4) {
             tentaclone.rotate(i * 36, [tentacle.bounds.bottomCenter.x - 2, tentacle.bounds.bottomCenter.y - 15]);
-        } else if (i == 5) {
+        } else if (i === 5) {
             tentaclone.rotate(i * 36, [tentacle.bounds.bottomCenter.x, tentacle.bounds.bottomCenter.y - 15]);
-        } else if (i == 6) {
+        } else if (i === 6) {
             tentaclone.rotate(i * 36, [tentacle.bounds.bottomCenter.x + 2, tentacle.bounds.bottomCenter.y - 15]);
         }
-        else if (i == 7) {
+        else if (i === 7) {
             tentaclone.rotate(i * 36, [tentacle.bounds.bottomCenter.x + 8, tentacle.bounds.bottomCenter.y - 17]);
         }
         else {

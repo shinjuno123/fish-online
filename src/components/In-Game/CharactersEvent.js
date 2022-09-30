@@ -26,14 +26,13 @@ function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
     // simulate key board
     // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
 
-    // console.log(time);
 
     if (time % 1200 === 0) {
         const mobsPoints = responsePoints.mobsResponsePoints;
         const randomPlace = Math.floor(Math.random() * mobsPoints.length);
         const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70);
         mobs.push(mob);
-        console.log(mobsPoints[randomPlace]);
+        time = 1;
     }
 
 
