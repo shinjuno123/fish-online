@@ -49,10 +49,12 @@ function testMap () {
 
     // Response place setup
     const userResponsePoints = [93.75, 63.3];
-    const mobsResponsePoints = [[60, 0], [window.screen.availWidth * 2 - 60, 0]];
+    const mobsResponsePoints = [[100, 0], [window.screen.availWidth * 2 - 100, 0], [window.screen.availWidth, window.screen.availHeight - 100], [window.screen.availWidth, -window.screen.availHeight + 100]];
+
+    const responsePoints = { userResponsePoints: userResponsePoints, mobsResponsePoints: mobsResponsePoints };
 
 
-    return { mapSize: mapSize, obstacles: obstacles, userResponsePoints: userResponsePoints, mobsResponsePoints: mobsResponsePoints };
+    return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints };
 }
 
 

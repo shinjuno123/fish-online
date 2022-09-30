@@ -4,7 +4,6 @@ import { Starty } from "./Characters";
 import "./css/game.css";
 import { update } from "./CharactersEvent";
 import testMap from "./Maps";
-import { Mob1 } from "./Mob";
 
 
 function Game () {
@@ -16,13 +15,11 @@ function Game () {
 
 
 
-        const { mapSize, obstacles, userResponsePoints, mobsResponsePoints } = testMap();
+        const { mapSize, obstacles, responsePoints } = testMap();
 
         console.log(mapSize);
 
-        const mob1 = new Mob1({ x: 93.75, y: 63.3 }, true, 70);
 
-        const mobs = [mob1];
 
 
         const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 }, false, 70);
@@ -30,7 +27,7 @@ function Game () {
 
 
 
-        update(starty, mapSize, mobs, obstacles);
+        update(starty, mapSize, [], obstacles, responsePoints);
 
 
 

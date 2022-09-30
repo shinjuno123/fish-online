@@ -1,10 +1,12 @@
 import paper from "paper";
+import { Mob1 } from "./Mob";
 // object's position depending on the relative position of fish
 
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.98, keys: {} };
 
 
 let isGameOver = false;
+let time = 0;
 
 function startyMovementHandler (event) {
 
@@ -20,12 +22,23 @@ function startyMovementHandler (event) {
     }
 }
 
-function update (myCharacter, mapSize, mobs, obstacles) {
+function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
     // simulate key board
     // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
 
+    // console.log(time);
+
+    if (time % 1200 === 0) {
+        const mobsPoints = responsePoints.mobsResponsePoints;
+        const randomPlace = Math.floor(Math.random() * mobsPoints.length);
+        const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70);
+        mobs.push(mob);
+        console.log(mobsPoints[randomPlace]);
+    }
 
 
+
+    time += 1;
 
     // Recognize key board input
     if (userState.keys["ArrowUp"]) {
@@ -54,29 +67,20 @@ function update (myCharacter, mapSize, mobs, obstacles) {
     const nextPosition = myCharacter.getPosition();
 
 
-
-
-
-
-
-
-    // when contacting to obstacles, user's stops moving toward obstacles
-
-
-
-
-
+    // move as pressing keyboard arrow buttons
     userState.velY *= userState.friction;
     nextPosition.y += userState.velY;
 
     userState.velX *= userState.friction;
     nextPosition.x += userState.velX;
 
-    // move as pressing keyboard arrow buttons
+
 
     let isXChanged = false;
     let isYChanged = false;
 
+
+    // when contacting to obstacles, user's stops moving toward obstacles
     obstacles = obstacles.map(function (obstacle) {
         for (let pathItem of myCharacter.group.getItems()) {
             const point = obstacle.group.getItem().getIntersections(pathItem)[0];
@@ -163,11 +167,11 @@ function update (myCharacter, mapSize, mobs, obstacles) {
         if (isIntersects) {
             if (mob.size <= myCharacter.size) {
                 console.log("You can eat!");
-                myCharacter.size += mob.size * 0.01;
+                myCharacter.size += mob.size * 0.05;
                 mob.group.remove();
                 return;
             } else {
-                mob.size += myCharacter.size * 0.01;
+                mob.size += myCharacter.size * 0.05;
                 myCharacter.group.remove();
                 isGameOver = true;
                 return mob;
@@ -193,7 +197,7 @@ function update (myCharacter, mapSize, mobs, obstacles) {
 
     // Event Handler to use in requestAnimationFrame
     function handleEvent () {
-        return update(myCharacter, mapSize, mobs, obstacles);
+        return update(myCharacter, mapSize, mobs, obstacles, responsePoints);
     }
 
 }
