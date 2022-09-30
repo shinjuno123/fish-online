@@ -55,7 +55,18 @@ function testMap () {
     const responsePoints = { userResponsePoints: userResponsePoints, mobsResponsePoints: mobsResponsePoints };
 
 
-    new SeaAnemone(400, 300, 1, 60);
+    const seaAnemone1 = new SeaAnemone(500, 610, 1.5, 0);
+    const seaAnemone2 = new SeaAnemone(300, 550, 1, 0);
+    const seaAnemone3 = new SeaAnemone(990, 760, 1, 40);
+    const seaAnemone4 = new SeaAnemone(990, 230, 1, 180);
+    const seaAnemone5 = new SeaAnemone(550, 20, 0.8, 200);
+    const seaAnemone6 = new SeaAnemone(2200, 190, 0.8, 160);
+    const seaAnemone7 = new SeaAnemone(3030, 190, 1.2, 280);
+    const seaAnemone8 = new SeaAnemone(2550, 600, 2, 10);
+    const seaAnemone9 = new SeaAnemone(2350, -150, 2, 30);
+    const seaAnemone10 = new SeaAnemone(2350, -640, 2, 210);
+    const seaAnemone11 = new SeaAnemone(900, -700, 1.1, 140);
+    const seaAnemone12 = new SeaAnemone(900, -200, 2, -20);
 
 
     return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints };
