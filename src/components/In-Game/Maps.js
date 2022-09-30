@@ -72,7 +72,11 @@ function testMap () {
     const seaAnemone12 = new SeaAnemone(900, -200, 2, -20);
 
 
-    new Seaweed(200, 200, 1, true);
+    new Seaweed(700, 100, 1.2, 210);
+    new Seaweed(800, 650, 1.2, -20);
+    new Seaweed(90, 340, 1.2, 70);
+    new Seaweed(1600, 250, 1.2, 175);
+    new Seaweed(1750, 250, 1.2, 175);
 
     return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints };
 }

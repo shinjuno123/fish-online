@@ -1,5 +1,8 @@
 body{
-    background: no-repeat scroll url("/images/background.jpg");
+    background-image: url("/images/underthesea.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 .setting{

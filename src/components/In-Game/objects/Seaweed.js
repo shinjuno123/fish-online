@@ -2,7 +2,7 @@ import paper from "paper";
 
 
 
-function Seaweed (x, y, scale, reverse) {
+function Seaweed (x, y, scale, degree) {
     this.group = new paper.Group();
     this.path = new paper.Path([50, 100], [50, 60], [50, 20], [60, 20], [60, 60], [60, 100]);
 
@@ -25,6 +25,12 @@ function Seaweed (x, y, scale, reverse) {
     this.path.curves[4].handle1.x = 10;
     this.path.curves[4].handle2.x = 10;
 
+    for (let i = 1; i <= 10; i++) {
+        const clone = this.path.clone();
+        clone.position.x += i * 14;
+        this.group.addChild(clone);
+    }
+
 
     this.group.addChild(this.path);
 
@@ -32,14 +38,9 @@ function Seaweed (x, y, scale, reverse) {
     this.group.bounds.bottomCenter.x = x;
     this.group.bounds.bottomCenter.y = y;
 
-    // flip horizontally
-    if (reverse) {
-        this.group.scale(-1, 1);
-    } else {
-        this.group.scale(1, 1);
-    }
 
     this.group.bounds.height *= scale;
+    this.group.rotate(degree, this.group.bounds.bottomCenter);
 
 }
 
