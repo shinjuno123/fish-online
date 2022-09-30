@@ -1,5 +1,6 @@
 import paper from "paper";
 import Stone, { SideStone } from "./objects/rock";
+import SeaAnemone from "./objects/SeaAnemone";
 
 function testMap () {
     // map Size setup
@@ -52,6 +53,9 @@ function testMap () {
     const mobsResponsePoints = [[100, 0], [window.screen.availWidth * 2 - 100, 0], [window.screen.availWidth, window.screen.availHeight - 100], [window.screen.availWidth, -window.screen.availHeight + 100]];
 
     const responsePoints = { userResponsePoints: userResponsePoints, mobsResponsePoints: mobsResponsePoints };
+
+
+    new SeaAnemone(400, 300, 1, 60);
 
 
     return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints };

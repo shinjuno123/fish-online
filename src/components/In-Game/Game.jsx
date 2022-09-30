@@ -4,6 +4,7 @@ import { Starty } from "./Characters";
 import "./css/game.css";
 import { update } from "./CharactersEvent";
 import testMap from "./Maps";
+import SeaAnemone from "./objects/SeaAnemone";
 
 
 function Game () {
