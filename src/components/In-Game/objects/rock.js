@@ -17,9 +17,9 @@ function Stone (x, y, size) {
 }
 
 
-function SideStone (x, y, degree, reverse) {
+function SideStone (x, y, degree, reverse,mapSize) {
     this.group = new paper.Group();
-    this.stonePath = new paper.Path([0, window.screen.availHeight], [0, 0], [20, 40], [70, 200], [100, 250], [130, 400], [200, 500], [300, 520], [500, 580], [600, 580], [700, 650], [800, 650], [900, 660], [1200, 800], [window.screen.availWidth, window.screen.availHeight]);
+    this.stonePath = new paper.Path([0, mapSize[1] / 2], [0, 0], [20, 40], [70, 200], [100, 250], [130, 400], [200, 500], [300, 520], [500, 580], [600, 580], [700, 650], [800, 650], [900, 660], [1200, 800], [mapSize[0] / 2, mapSize[1] / 2]);
 
     this.controlOverscreenCurves = function () {
         this.stonePath.curves[0].handle1.y = 0;
