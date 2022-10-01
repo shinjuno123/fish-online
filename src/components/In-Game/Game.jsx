@@ -14,11 +14,11 @@ function Game () {
 
 
 
-        const { mapSize, obstacles, responsePoints } = testMap();
+        const { mapSize, obstacles, responsePoints,attackers,hiders } = testMap();
         const starty = new Starty({ x: window.screen.availWidth / 2, y:window.screen.availHeight / 2 }, false, 70);
 
         // paper.view.zoom = 0.3;
-        update(starty, mapSize, [], obstacles, responsePoints);
+        update(starty, mapSize, [], obstacles, responsePoints,attackers,hiders);
     }
 
 

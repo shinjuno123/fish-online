@@ -3,7 +3,7 @@ import Stone, { SideStone } from "./objects/rock";
 import SeaAnemone from "./objects/SeaAnemone";
 import Seaweed from "./objects/Seaweed";
 
-function testMap () {
+function testMap() {
     // map Size setup
     const mapSize = [3072, 1648];
 
@@ -44,10 +44,10 @@ function testMap () {
 
 
     // setup Stones at the 4 egdes of map
-    obstacles.push(new SideStone(mapSize[0] / 4, mapSize[1] / 4, 0, false,mapSize));
-    obstacles.push(new SideStone(mapSize[0] * 0.75, mapSize[1] / 4, 0, true,mapSize));
-    obstacles.push(new SideStone(mapSize[0] / 4, -mapSize[1] / 4, 180, true,mapSize));
-    obstacles.push(new SideStone(mapSize[0] * 0.75, -mapSize[1] / 4, 180, false,mapSize));
+    obstacles.push(new SideStone(mapSize[0] / 4, mapSize[1] / 4, 0, false, mapSize));
+    obstacles.push(new SideStone(mapSize[0] * 0.75, mapSize[1] / 4, 0, true, mapSize));
+    obstacles.push(new SideStone(mapSize[0] / 4, -mapSize[1] / 4, 180, true, mapSize));
+    obstacles.push(new SideStone(mapSize[0] * 0.75, -mapSize[1] / 4, 180, false, mapSize));
 
 
     // Response place setup
@@ -58,35 +58,41 @@ function testMap () {
 
 
 
-    // Setup seaAnemons
-    const seaAnemone1 = new SeaAnemone(500, 610, 1.5, 0);
-    const seaAnemone2 = new SeaAnemone(300, 550, 1, 0);
-    const seaAnemone3 = new SeaAnemone(990, 760, 1, 40);
-    const seaAnemone4 = new SeaAnemone(990, 230, 1, 180);
-    const seaAnemone5 = new SeaAnemone(550, 20, 0.8, 200);
-    const seaAnemone6 = new SeaAnemone(2200, 190, 0.8, 160);
-    const seaAnemone7 = new SeaAnemone(3030, 190, 1.2, 280);
-    const seaAnemone8 = new SeaAnemone(2550, 600, 2, 10);
-    const seaAnemone9 = new SeaAnemone(2350, -150, 2, 30);
-    const seaAnemone10 = new SeaAnemone(2350, -640, 2, 210);
-    const seaAnemone11 = new SeaAnemone(900, -700, 1.1, 140);
-    const seaAnemone12 = new SeaAnemone(900, -200, 2, -20);
+    const attackers = [];
 
+    // Setup seaAnemons
+    attackers.push();
+    attackers.push(new SeaAnemone(500, 610, 1.5, 0));
+    attackers.push(new SeaAnemone(300, 550, 1, 0));
+    attackers.push(new SeaAnemone(990, 760, 1, 40));
+    attackers.push(new SeaAnemone(990, 230, 1, 180));
+    attackers.push(new SeaAnemone(550, 20, 0.8, 200));
+    attackers.push(new SeaAnemone(2200, 190, 0.8, 160));
+    attackers.push(new SeaAnemone(3030, 190, 1.2, 280));
+    attackers.push(new SeaAnemone(2550, 600, 2, 10));
+    attackers.push(new SeaAnemone(2350, -150, 2, 30));
+    attackers.push(new SeaAnemone(2350, -640, 2, 210));
+    attackers.push(new SeaAnemone(900, -700, 1.1, 140));
+    attackers.push(new SeaAnemone(900, -200, 2, -20));
+
+
+    const hiders = []
+    hiders.push()
 
     // Setup seaweeds
-    new Seaweed(700, 100, 1.2, 210);
-    new Seaweed(800, 650, 1.2, -20);
-    new Seaweed(90, 340, 1.2, 70);
-    new Seaweed(1600, 250, 1.2, 175);
-    new Seaweed(1750, 250, 1.2, 175);
-    new Seaweed(1540, 780, 1.5, 0);
-    new Seaweed(1540, -860, 1.5, 180);
-    new Seaweed(2700, -600, 1.3, 200);
-    new Seaweed(2800, 510, 1.3, -10);
-    new Seaweed(300, -560, 1.2, 170);
-    new Seaweed(660, -660, 1.2, 140);
+    hiders.push(new Seaweed(700, 100, 1.2, 210));
+    hiders.push(new Seaweed(800, 650, 1.2, -20));
+    hiders.push(new Seaweed(90, 340, 1.2, 70));
+    hiders.push(new Seaweed(1600, 250, 1.2, 175));
+    hiders.push(new Seaweed(1750, 250, 1.2, 175));
+    hiders.push(new Seaweed(1540, 780, 1.5, 0));
+    hiders.push(new Seaweed(1540, -860, 1.5, 180));
+    hiders.push(new Seaweed(2700, -600, 1.3, 200));
+    hiders.push(new Seaweed(2800, 510, 1.3, -10));
+    hiders.push(new Seaweed(300, -560, 1.2, 170));
+    hiders.push(new Seaweed(660, -660, 1.2, 140));
 
-    return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints };
+    return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints ,attackers:attackers,hiders:hiders};
 }
 
 

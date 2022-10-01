@@ -1,5 +1,11 @@
 import paper from "paper";
 import { Mob1 } from "./Mob";
+
+// simulate key board
+// document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+
+
+
 // object's position depending on the relative position of fish
 
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.98, keys: {} };
@@ -7,10 +13,11 @@ const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.9
 
 let isGameOver = false;
 let time = 0;
+let hideTime = 0;
 
 
 
-function startyMovementHandler (event) {
+function startyMovementHandler(event) {
 
 
     event.preventDefault();
@@ -24,17 +31,13 @@ function startyMovementHandler (event) {
     }
 }
 
-function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
-    // simulate key board
-    // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
-
+function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
     if (time % 1200 === 0) {
         const mobsPoints = responsePoints.mobsResponsePoints;
         const randomPlace = Math.floor(Math.random() * mobsPoints.length);
         const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70);
         mobs.push(mob);
-        time = 1;
     }
 
 
@@ -81,7 +84,7 @@ function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
     let isYChanged = false;
 
 
-    // when contacting to obstacles, user's stops moving toward obstacles
+    // when contacting to obstacles, user's fish stops moving toward obstacles
     obstacles = obstacles.map(function (obstacle) {
         for (let pathItem of myCharacter.group.getItems()) {
             const point = obstacle.group.getItem().getIntersections(pathItem)[0];
@@ -168,15 +171,15 @@ function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
         if (isIntersects) {
             if (mob.size <= myCharacter.size) {
                 console.log("You can eat!");
-                if(myCharacter.size <= 70){
-                    myCharacter.size += mob.size * 0.05; 
-                } else if(70 < myCharacter.size && myCharacter.size <= 100 ){
-                    myCharacter.size += mob.size * 0.03; 
-                } else if(100 < myCharacter.size && myCharacter.size <= 130){
+                if (myCharacter.size <= 70) {
+                    myCharacter.size += mob.size * 0.05;
+                } else if (70 < myCharacter.size && myCharacter.size <= 100) {
+                    myCharacter.size += mob.size * 0.03;
+                } else if (100 < myCharacter.size && myCharacter.size <= 130) {
                     myCharacter.size += mob.size * 0.02;
-                } else if(130 < myCharacter.size && myCharacter.size <= 170){
+                } else if (130 < myCharacter.size && myCharacter.size <= 170) {
                     myCharacter.size += mob.size * 0.015;
-                } else if(170 < myCharacter.size && myCharacter.size <= 200){
+                } else if (170 < myCharacter.size && myCharacter.size <= 200) {
                     myCharacter.size += mob.size * 0.005;
                 }
                 myCharacter.size += mob.size * 0.05;
@@ -195,6 +198,42 @@ function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
     });
 
 
+    // when meeding hiders, for example seaweed where can hide fishes including your fish
+    hiders = hiders.map(function (hider) {
+        // console.log(myCharacter.group);
+        if (hider.group.bounds.contains(myCharacter.group.bounds)) {
+            hideTime = time + 10; 
+        }
+
+        for(let mob of mobs){
+            if (hider.group.bounds.contains(mob.group.bounds)){
+                mob.hideTime = time + 30;
+            }
+        }
+
+        return hider
+    });
+
+    // if user fish just hid
+    if(hideTime < time){
+        myCharacter.group.visible = true;
+    }else{
+        myCharacter.group.visible = false;
+    }
+
+
+    // if mob fish just hid
+    mobs = mobs.map(function(mob){
+        if(mob.hideTime < time){
+            mob.group.visible = true;
+        }else{
+            mob.group.visible = false;
+        }
+
+        return mob;
+    });
+
+
 
 
 
@@ -208,8 +247,8 @@ function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
 
 
     // Event Handler to use in requestAnimationFrame
-    function handleEvent () {
-        return update(myCharacter, mapSize, mobs, obstacles, responsePoints);
+    function handleEvent() {
+        return update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders);
     }
 
 }
