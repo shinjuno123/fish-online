@@ -8,7 +8,6 @@ import testMap from "./Maps";
 
 function Game () {
 
-
     function canvasSetup () {
         const canvas = document.getElementById("game-canvas");
         paper.setup(canvas);
@@ -16,21 +15,10 @@ function Game () {
 
 
         const { mapSize, obstacles, responsePoints } = testMap();
+        const starty = new Starty({ x: window.screen.availWidth / 2, y:window.screen.availHeight / 2 }, false, 70);
 
-        console.log(mapSize);
-
-
-
-
-        const starty = new Starty({ x: mapSize[0] / 4, y: mapSize[1] / 4 }, false, 70);
-
-        paper.view.zoom = 0.3;
-
-
+        // paper.view.zoom = 0.3;
         update(starty, mapSize, [], obstacles, responsePoints);
-
-
-
     }
 
 

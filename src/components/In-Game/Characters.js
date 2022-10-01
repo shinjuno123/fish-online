@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { startyMovementHandler } from "./CharactersEvent";
 
 // Starty(fish character in game) class
-function Starty (center, isReverse = false, size) {
+function Starty(center, isReverse = false, size) {
     this.head = { x: center.x - 100, y: center.y };
     this.group = new paper.Group();
     this.isReverse = isReverse;
@@ -33,6 +33,11 @@ function Starty (center, isReverse = false, size) {
         this.group.bounds.height = this.ratio.height * this.size;
         this.group.position.x = center.x;
         this.group.position.y = center.y;
+
+        // Setup character movement handler
+
+        document.body.addEventListener("keydown", (event) => startyMovementHandler(event));
+        document.body.addEventListener('keyup', (event) => startyMovementHandler(event));
     };
 
 
@@ -230,11 +235,6 @@ function Starty (center, isReverse = false, size) {
     };
 
     this.constructor();
-
-    // Setup character movement handler
-
-    document.body.addEventListener("keydown", (event) => startyMovementHandler(event));
-    document.body.addEventListener('keyup', (event) => startyMovementHandler(event));
 }
 
 

@@ -8,10 +8,6 @@ const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.9
 let isGameOver = false;
 let time = 0;
 
-function sigmoid(z){
-    const k = 50;
-    return 1 / (1 + Math.exp(-z/k));
-}
 
 
 function startyMovementHandler (event) {
@@ -91,25 +87,25 @@ function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
             const point = obstacle.group.getItem().getIntersections(pathItem)[0];
             if (point) {
                 if (point.point.x - nextPosition.x > 0) {
-                    nextPosition.x = nextPosition.x - 1;
-                    userState.velX -= 1;
+                    nextPosition.x = nextPosition.x - 2;
+                    userState.velX -= 2;
                     isXChanged = true;
                 }
                 if (point.point.x - nextPosition.x < 0) {
-                    nextPosition.x = nextPosition.x + 1;
-                    userState.velX += 1;
+                    nextPosition.x = nextPosition.x + 2;
+                    userState.velX += 2;
                     isXChanged = true;
                 }
 
                 if (point.point.y - nextPosition.y > 0) {
-                    nextPosition.y = nextPosition.y - 1;
-                    userState.velY -= 1;
+                    nextPosition.y = nextPosition.y - 2;
+                    userState.velY -= 2;
                     isYChanged = true;
                 }
 
                 if (point.point.y - nextPosition.y < 0) {
-                    nextPosition.y = nextPosition.y + 1;
-                    userState.velY += 1;
+                    nextPosition.y = nextPosition.y + 2;
+                    userState.velY += 2;
                     isYChanged = true;
                 }
             }

@@ -15,28 +15,28 @@ function testMap () {
     rect.strokeColor = "black";
     rect.strokeWidth = "3";
 
-    // Map camera movement
-    const screen1 = new paper.PointText();
-    screen1.content = "1";
-    screen1.fontSize = 60;
-    screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
+    // // Map camera movement
+    // const screen1 = new paper.PointText();
+    // screen1.content = "1";
+    // screen1.fontSize = 60;
+    // screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
 
-    const screen2 = new paper.PointText();
-    screen2.content = "2";
-    screen2.fontSize = 60;
-    screen2.bounds.center = [mapSize[0] / 4, -mapSize[1] / 4];
-
-
-    const screen3 = new paper.PointText();
-    screen3.content = "3";
-    screen3.fontSize = 60;
-    screen3.bounds.center = [mapSize[0] * 0.75, -mapSize[1] / 4];
+    // const screen2 = new paper.PointText();
+    // screen2.content = "2";
+    // screen2.fontSize = 60;
+    // screen2.bounds.center = [mapSize[0] / 4, -mapSize[1] / 4];
 
 
-    const screen4 = new paper.PointText();
-    screen4.content = "4";
-    screen4.fontSize = 60;
-    screen4.bounds.center = [mapSize[0] * 0.75, mapSize[1] / 4];
+    // const screen3 = new paper.PointText();
+    // screen3.content = "3";
+    // screen3.fontSize = 60;
+    // screen3.bounds.center = [mapSize[0] * 0.75, -mapSize[1] / 4];
+
+
+    // const screen4 = new paper.PointText();
+    // screen4.content = "4";
+    // screen4.fontSize = 60;
+    // screen4.bounds.center = [mapSize[0] * 0.75, mapSize[1] / 4];
 
 
     // setup center Stone
@@ -73,6 +73,7 @@ function testMap () {
     const seaAnemone12 = new SeaAnemone(900, -200, 2, -20);
 
 
+    // Setup seaweeds
     new Seaweed(700, 100, 1.2, 210);
     new Seaweed(800, 650, 1.2, -20);
     new Seaweed(90, 340, 1.2, 70);
