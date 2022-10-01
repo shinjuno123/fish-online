@@ -123,6 +123,7 @@ function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers
 
 
 
+
     // Recognize map boundary and check if it is wall 
     const isWall = { x: false, y: false };
 
@@ -179,10 +180,9 @@ function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers
                     myCharacter.size += mob.size * 0.02;
                 } else if (130 < myCharacter.size && myCharacter.size <= 170) {
                     myCharacter.size += mob.size * 0.015;
-                } else if (170 < myCharacter.size && myCharacter.size <= 200) {
+                } else if (170 < myCharacter.size && myCharacter.size) {
                     myCharacter.size += mob.size * 0.005;
                 }
-                myCharacter.size += mob.size * 0.05;
                 mob.group.remove();
                 return;
             } else {
@@ -202,11 +202,11 @@ function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers
     hiders = hiders.map(function (hider) {
         // console.log(myCharacter.group);
         if (hider.group.bounds.contains(myCharacter.group.bounds)) {
-            hideTime = time + 10; 
+            hideTime = time + 10;
         }
 
-        for(let mob of mobs){
-            if (hider.group.bounds.contains(mob.group.bounds)){
+        for (let mob of mobs) {
+            if (hider.group.bounds.contains(mob.group.bounds)) {
                 mob.hideTime = time + 30;
             }
         }
@@ -215,23 +215,35 @@ function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers
     });
 
     // if user fish just hid
-    if(hideTime < time){
+    if (hideTime < time) {
         myCharacter.group.visible = true;
-    }else{
+    } else {
         myCharacter.group.visible = false;
     }
 
 
     // if mob fish just hid
-    mobs = mobs.map(function(mob){
-        if(mob.hideTime < time){
+    mobs = mobs.map(function (mob) {
+        if (mob.hideTime < time) {
             mob.group.visible = true;
-        }else{
+        } else {
             mob.group.visible = false;
         }
 
         return mob;
     });
+
+
+    // when user fish meets attacters like sea anemone, their size is decreased
+    attackers.map(function (attacker) {
+        if (attacker.group.contains(myCharacter.group.bounds)) {
+            myCharacter.size -= 0.1;
+            userState.velX = userState.velX < userState.speed ? -userState.velX * 1.1 : -userState.velX * 0.9;
+            userState.velY = userState.velY < userState.speed ? -userState.velY * 1.1 : -userState.velY * 0.9;
+        }
+    });
+
+
 
 
 
