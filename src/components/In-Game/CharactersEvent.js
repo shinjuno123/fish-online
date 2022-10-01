@@ -8,6 +8,12 @@ const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.9
 let isGameOver = false;
 let time = 0;
 
+function sigmoid(z){
+    const k = 50;
+    return 1 / (1 + Math.exp(-z/k));
+}
+
+
 function startyMovementHandler (event) {
 
 
@@ -166,6 +172,17 @@ function update (myCharacter, mapSize, mobs, obstacles, responsePoints) {
         if (isIntersects) {
             if (mob.size <= myCharacter.size) {
                 console.log("You can eat!");
+                if(myCharacter.size <= 70){
+                    myCharacter.size += mob.size * 0.05; 
+                } else if(70 < myCharacter.size && myCharacter.size <= 100 ){
+                    myCharacter.size += mob.size * 0.03; 
+                } else if(100 < myCharacter.size && myCharacter.size <= 130){
+                    myCharacter.size += mob.size * 0.02;
+                } else if(130 < myCharacter.size && myCharacter.size <= 170){
+                    myCharacter.size += mob.size * 0.015;
+                } else if(170 < myCharacter.size && myCharacter.size <= 200){
+                    myCharacter.size += mob.size * 0.005;
+                }
                 myCharacter.size += mob.size * 0.05;
                 mob.group.remove();
                 return;

@@ -78,6 +78,12 @@ function testMap () {
     new Seaweed(90, 340, 1.2, 70);
     new Seaweed(1600, 250, 1.2, 175);
     new Seaweed(1750, 250, 1.2, 175);
+    new Seaweed(1540, 780, 1.5, 0);
+    new Seaweed(1540, -860, 1.5, 180);
+    new Seaweed(2700, -600, 1.3, 200);
+    new Seaweed(2800, 510, 1.3, -10);
+    new Seaweed(300, -560, 1.2, 170);
+    new Seaweed(660, -660, 1.2, 140);
 
     return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints };
 }
