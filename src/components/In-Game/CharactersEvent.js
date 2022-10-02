@@ -8,7 +8,7 @@ import { Mob1 } from "./Mob";
 
 // object's position depending on the relative position of fish
 
-const userState = { isObstacle: false, velX: 0, velY: 0, speed: 4, friction: 0.98, keys: {} };
+const userState = { isObstacle: false, velX: 0, velY: 0, speed: 3, friction: 0.98, keys: {} };
 
 
 let isGameOver = false;
@@ -82,6 +82,7 @@ function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers
 
     let isXChanged = false;
     let isYChanged = false;
+
 
 
     // when contacting to obstacles, user's fish stops moving toward obstacles
@@ -246,16 +247,14 @@ function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers
 
 
 
-
-
-
     // Check if it is game over or not
     if (isGameOver) {
-        cancelAnimationFrame(handleEvent);
+        window.cancelAnimationFrame(handleEvent);
     } else {
-        requestAnimationFrame(handleEvent);
+        window.requestAnimationFrame(handleEvent);
     }
 
+    // handleEvent()
 
 
     // Event Handler to use in requestAnimationFrame
@@ -264,6 +263,8 @@ function update(myCharacter, mapSize, mobs, obstacles, responsePoints, attackers
     }
 
 }
+
+
 
 
 

@@ -7,6 +7,22 @@
 - A plan since 26th Sep 2022 : Implement a whole map and camera movement following user's character fish and items interaction with each other.
 
 26th September 2022
-- Complemented implementing a test map and camera movement that follows user's character fish and items interaction with each other.
+- Completed implementing a test map and camera movement that follows user's character fish and items interaction with each other.
 - A plan since 27th Sep 2022 : Implement a mob design and user character fish's sizeup when the user fish eats mob fishes that are smaller than user's one and rock design(Decided to use Image) that is for obstacles. 
 
+
+27th September 2022
+- Completed adding mob fish and adding reverse function to the mob fish and adding smooth reverse effects to mob fish and also setting up gameover state
+
+
+28th September 2022
+- Add an interaction between obstacles and user's fish and search for simulating keyboard press
+
+30th september 2022
+- Create sweaweed and sea anemone objects and change backgound image
+
+1th October 2022
+- Create a function that makes user fish smaller when it bumps into sea anemone
+- Refact codes
+- Setup seaweed to a default map
+- Apply absolute size to the default map
