@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import paper from "paper";
 import { Starty } from "./Characters";
 import "./css/game.css";
-import { update } from "./CharactersEvent";
+import { gameStart } from "./CharactersEvent";
 import testMap from "./Maps";
 
 
@@ -14,11 +14,11 @@ function Game () {
 
 
 
-        const { mapSize, obstacles, responsePoints,attackers,hiders } = testMap();
-        const starty = new Starty({ x: window.screen.availWidth / 2, y:window.screen.availHeight / 2 }, false, 70);
+        const { mapSize, obstacles, responsePoints, attackers, hiders } = testMap();
+        const starty = new Starty({ x: window.screen.availWidth / 2, y: window.screen.availHeight / 2 }, false, 70);
 
         // paper.view.zoom = 0.3;
-        update(starty, mapSize, [], obstacles, responsePoints,attackers,hiders);
+        gameStart(starty, mapSize, [], obstacles, responsePoints, attackers, hiders);
     }
 
 
