@@ -4,7 +4,6 @@ import { Mob1 } from "./Mob";
 // // Register one of the TF.js backends.
 // import '@tensorflow/tfjs-backend-webgl';
 // // import '@tensorflow/tfjs-backend-wasm';
-// import * as poseDetection from '@tensorflow-models/pose-detection';
 
 // simulate key board
 // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
@@ -47,6 +46,9 @@ function gameStart (video,myCharacter, mapSize, mobs, obstacles, responsePoints,
     function videoUpdate(){
         tmpCanvas.getContext('2d').drawImage(video.current,0,0);
         const image = tmpCanvas.toDataURL('image/webp');
+        const detectorConfig = {modelType: window.poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING};
+        // console.log(detectorConfig);
+        // const detectorConfig = {modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING};
         // const detectorConfig = {modelType:poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING};
     
     }
