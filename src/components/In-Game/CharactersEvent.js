@@ -1,12 +1,16 @@
 import paper from "paper";
 import { Mob1 } from "./Mob";
+// import * as tf from '@tensorflow/tfjs-core';
+// // Register one of the TF.js backends.
+// import '@tensorflow/tfjs-backend-webgl';
+// // import '@tensorflow/tfjs-backend-wasm';
+// import * as poseDetection from '@tensorflow-models/pose-detection';
 
 // simulate key board
 // document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
 
 // object's position depending on the relative position of fish
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 5, friction: 0.98, keys: {} };
-
 
 
 
@@ -25,25 +29,35 @@ function startyMovementHandler (event) {
     }
 }
 
-function gameStart (myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
+function gameStart (video,myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
 
     let isGameOver = false;
     let hideTime = 0;
     let prevTime = -10001;
+    const tmpCanvas = document.createElement("canvas");
+    tmpCanvas.width = 320;
+    tmpCanvas.height = 240;
+    console.log(tmpCanvas);
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
     });
 
+    function videoUpdate(){
+        tmpCanvas.getContext('2d').drawImage(video.current,0,0);
+        const image = tmpCanvas.toDataURL('image/webp');
+        // const detectorConfig = {modelType:poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING};
+    
+    }
+
     // mobs
     function update (time, mobs) {
 
-        // console.log(Math.floor(time), prevTime);
 
         if (prevTime + 10000 < time) {
             prevTime = time;
-            console.log("created");
+            console.log("created",mobs.length);
 
             const mobsPoints = responsePoints.mobsResponsePoints;
             const randomPlace = Math.floor(Math.random() * mobsPoints.length);
@@ -51,8 +65,7 @@ function gameStart (myCharacter, mapSize, mobs, obstacles, responsePoints, attac
             mobs.push(mob);
         }
 
-
-
+        videoUpdate();
 
         // Recognize key board input
         if (userState.keys["ArrowUp"]) {
