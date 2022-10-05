@@ -1,5 +1,6 @@
 import paper from "paper";
 import { Mob1 } from "./Mob";
+
 // import * as tf from '@tensorflow/tfjs-core';
 // // Register one of the TF.js backends.
 // import '@tensorflow/tfjs-backend-webgl';
@@ -28,38 +29,37 @@ function startyMovementHandler (event) {
     }
 }
 
-function gameStart (video,myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
+function gameStart (video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
 
     let isGameOver = false;
     let hideTime = 0;
     let prevTime = -10001;
+    const worker = new Worker('worker.js');
     const tmpCanvas = document.createElement("canvas");
     tmpCanvas.width = 320;
     tmpCanvas.height = 240;
-    console.log(tmpCanvas);
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
     });
 
-    function videoUpdate(){
-        tmpCanvas.getContext('2d').drawImage(video.current,0,0);
-        const image = tmpCanvas.toDataURL('image/webp');
-        const detectorConfig = {modelType: window.poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING};
-        // console.log(detectorConfig);
-        // const detectorConfig = {modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING};
-        // const detectorConfig = {modelType:poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING};
-    
-    }
+    function videoUpdate () {
+        const ctx = tmpCanvas.getContext('2d');
+        ctx.drawImage(video.current, 0, 0);
+        const contents = {
+            image: ctx.getImageData(0, 0, 320, 240)
+        };
+        worker.postMessage(contents);
 
+    }
     // mobs
     function update (time, mobs) {
-
+        // console.log(time);
 
         if (prevTime + 10000 < time) {
             prevTime = time;
-            console.log("created",mobs.length);
+            console.log("created", mobs.length);
 
             const mobsPoints = responsePoints.mobsResponsePoints;
             const randomPlace = Math.floor(Math.random() * mobsPoints.length);
@@ -67,7 +67,7 @@ function gameStart (video,myCharacter, mapSize, mobs, obstacles, responsePoints,
             mobs.push(mob);
         }
 
-        videoUpdate();
+        // videoUpdate();
 
         // Recognize key board input
         if (userState.keys["ArrowUp"]) {
