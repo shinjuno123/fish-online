@@ -34,4 +34,5 @@ select{
     bottom: 450px;
     right: 20px;
     z-index: 2;
+    display: none;
 }

@@ -1,6 +1,7 @@
 import paper from "paper";
 import { Mob1 } from "./Mob";
 
+
 // import * as tf from '@tensorflow/tfjs-core';
 // // Register one of the TF.js backends.
 // import '@tensorflow/tfjs-backend-webgl';
@@ -11,7 +12,6 @@ import { Mob1 } from "./Mob";
 
 // object's position depending on the relative position of fish
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 5, friction: 0.98, keys: {} };
-
 
 
 
@@ -29,7 +29,7 @@ function startyMovementHandler (event) {
     }
 }
 
-function gameStart (video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
+async function gameStart (video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
 
     let isGameOver = false;
@@ -37,25 +37,31 @@ function gameStart (video, myCharacter, mapSize, mobs, obstacles, responsePoints
     let prevTime = -10001;
     const worker = new Worker('worker.js');
     const tmpCanvas = document.createElement("canvas");
+    let receievedKeyPoints;
     tmpCanvas.width = 320;
     tmpCanvas.height = 240;
+
+
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
     });
 
-    function videoUpdate () {
+    async function videoUpdate () {
         const ctx = tmpCanvas.getContext('2d');
         ctx.drawImage(video.current, 0, 0);
         const contents = {
-            image: ctx.getImageData(0, 0, 320, 240)
+            image: ctx.getImageData(0, 0, 320, 240),
         };
+
+
         worker.postMessage(contents);
 
     }
+
     // mobs
     function update (time, mobs) {
-        // console.log(time);
+
 
         if (prevTime + 10000 < time) {
             prevTime = time;
@@ -67,7 +73,15 @@ function gameStart (video, myCharacter, mapSize, mobs, obstacles, responsePoints
             mobs.push(mob);
         }
 
-        // videoUpdate();
+
+        videoUpdate();
+
+        worker.onmessage = (event)=>{
+            receievedKeyPoints = event.data[0]
+        }
+
+        console.log(receievedKeyPoints);
+
 
         // Recognize key board input
         if (userState.keys["ArrowUp"]) {
