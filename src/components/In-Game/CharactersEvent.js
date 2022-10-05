@@ -38,20 +38,21 @@ async function gameStart (video, myCharacter, mapSize, mobs, obstacles, response
     const worker = new Worker('worker.js');
     const tmpCanvas = document.createElement("canvas");
     let receievedKeyPoints;
+    let isExecuted = false;
     tmpCanvas.width = 320;
     tmpCanvas.height = 240;
-
 
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
     });
 
-    async function videoUpdate () {
+    async function videoUpdate (isExecuted) {
         const ctx = tmpCanvas.getContext('2d');
         ctx.drawImage(video.current, 0, 0);
         const contents = {
             image: ctx.getImageData(0, 0, 320, 240),
+            isExecuted : isExecuted,
         };
 
 
@@ -60,7 +61,7 @@ async function gameStart (video, myCharacter, mapSize, mobs, obstacles, response
     }
 
     // mobs
-    function update (time, mobs) {
+    async function update (time, mobs) {
 
 
         if (prevTime + 10000 < time) {
@@ -74,11 +75,15 @@ async function gameStart (video, myCharacter, mapSize, mobs, obstacles, response
         }
 
 
-        videoUpdate();
+
 
         worker.onmessage = (event)=>{
-            receievedKeyPoints = event.data[0]
+            receievedKeyPoints = event.data;
         }
+
+        await videoUpdate(isExecuted);
+
+        isExecuted = true;
 
         console.log(receievedKeyPoints);
 
