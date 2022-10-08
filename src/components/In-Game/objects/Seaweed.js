@@ -2,7 +2,7 @@ import paper from "paper";
 
 
 
-function Seaweed(x, y, scale, degree) {
+function Seaweed(x, y, scale, degree,paper) {
     this.group = new paper.Group();
     this.path = new paper.Path([50, 100], [50, 60], [50, 20], [60, 20], [60, 60], [60, 100]);
 

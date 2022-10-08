@@ -8,23 +8,31 @@ body{
 
 /* Scale canvas with resize attribute to full size */
 
-.game{
 
-    /* background-color: #DFF6FF; */
-}
-
-.game canvas{
+.game #game-canvas{
     height: 100%;
     width: 100%;
 }
 
 
-
-video{
+.game #motion-canvas{
     position: absolute;
     bottom: 0;
     right: 0;
     z-index: 1;
+    width: 320px;
+    height: 240px;
+}
+
+
+
+video{
+    -webkit-transform: scaleX(-1);
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    transform: scaleX(-1);
     /* display: none; */
 }
 

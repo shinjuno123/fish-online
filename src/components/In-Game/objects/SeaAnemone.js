@@ -1,7 +1,6 @@
-import paper from "paper";
 
 
-function SeaAnemone(x, y, scale, degree) {
+function SeaAnemone(x, y, scale, degree,paper) {
     this.group = new paper.Group();
 
 

@@ -26,3 +26,9 @@
 - Refact codes
 - Setup seaweed to a default map
 - Apply absolute size to the default map
+
+
+
+7th October 2022
+- Debounce keyboard typing
+- Draw key points and connect all the key points and show it to the screen

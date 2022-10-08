@@ -1,7 +1,7 @@
-import paper from "paper";
+// import paper from "paper";
 // import stone from "./img/stone.png";
 // x : 437.975 y: 225.651
-function Stone(x, y, size) {
+function Stone(x, y, size,paper) {
     this.group = new paper.Group();
     this.stonePath = new paper.Path([x - 387.975, y + 24.385], [x - 377.975, y - 22.651], [x - 37.975, y - 125.651], [x + 362.025, y - 35.651], [x + 342.025, y + 74.349], [x - 32.975, y + 124.349], [x - 387.975, y + 24.385]);
 
@@ -20,7 +20,7 @@ function Stone(x, y, size) {
 }
 
 
-function SideStone(x, y, degree, reverse, mapSize) {
+function SideStone(x, y, degree, reverse, mapSize,paper) {
     this.group = new paper.Group();
     this.stonePath = new paper.Path([0, mapSize[1] / 2], [0, 0], [20, 40], [70, 200], [100, 250], [130, 400], [200, 500], [300, 520], [500, 580], [600, 580], [700, 650], [800, 650], [900, 660], [1200, 800], [mapSize[0] / 2, mapSize[1] / 2]);
 

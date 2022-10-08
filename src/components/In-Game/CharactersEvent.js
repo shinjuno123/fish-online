@@ -1,6 +1,4 @@
-import paper from "paper";
 import { Mob1 } from "./Mob";
-
 
 // import * as tf from '@tensorflow/tfjs-core';
 // // Register one of the TF.js backends.
@@ -13,12 +11,10 @@ import { Mob1 } from "./Mob";
 // object's position depending on the relative position of fish
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 5, friction: 0.98, keys: {} };
 
-
-
-function startyMovementHandler (event) {
-
+function startyMovementHandler(event) {
 
     event.preventDefault();
+
 
     if (event.type === "keydown") {
         userState.keys[event.key] = true;
@@ -26,10 +22,13 @@ function startyMovementHandler (event) {
 
     if (event.type === "keyup") {
         userState.keys[event.key] = false;
+
     }
+
+    return;
 }
 
-async function gameStart (video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
+async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
 
     let isGameOver = false;
@@ -37,22 +36,26 @@ async function gameStart (video, myCharacter, mapSize, mobs, obstacles, response
     let prevTime = -10001;
     const worker = new Worker('worker.js');
     const tmpCanvas = document.createElement("canvas");
+    const imageSize = { width: 320, height: 240 };
     let receievedKeyPoints;
     let isExecuted = false;
-    tmpCanvas.width = 320;
-    tmpCanvas.height = 240;
+    const motionFrame = createMotionFrame();
+    const { leftKnee, rightKnee } = createMotion();
+    let prevLeftKnee = { x: motionFrame.bounds.centerX, y: motionFrame.bounds.centerY };
+    let prevRightKnee = { x: motionFrame.bounds.centerX, y: motionFrame.bounds.centerY };
+
 
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
     });
 
-    async function videoUpdate (isExecuted) {
+    async function videoUpdate(isExecuted) {
         const ctx = tmpCanvas.getContext('2d');
         ctx.drawImage(video.current, 0, 0);
         const contents = {
-            image: ctx.getImageData(0, 0, 320, 240),
-            isExecuted : isExecuted,
+            image: ctx.getImageData(0, 0, imageSize.width, imageSize.height),
+            isExecuted: isExecuted,
         };
 
 
@@ -60,9 +63,34 @@ async function gameStart (video, myCharacter, mapSize, mobs, obstacles, response
 
     }
 
-    // mobs
-    async function update (time, mobs) {
+    function createMotionFrame() {
+        const motionFrame = paper.Path.Rectangle(paper.view.bounds.width - imageSize.width, paper.view.bounds.height - imageSize.height, imageSize.width, imageSize.height);
+        motionFrame.fillColor = "white";
+        return motionFrame
+    }
 
+
+    function createMotion() {
+
+        const leftKnee = paper.Path.Circle([motionFrame.bounds.centerX, motionFrame.bounds.centerY], 3);
+        leftKnee.selected = true;
+
+
+        const rightKnee = paper.Path.Circle([motionFrame.bounds.centerX, motionFrame.bounds.centerY], 3);
+        rightKnee.selected = true;
+
+
+
+        return {
+            leftKnee: leftKnee, rightKnee: rightKnee
+        }
+    }
+
+
+
+    // mobs
+
+    async function update(time, mobs) {
 
         if (prevTime + 10000 < time) {
             prevTime = time;
@@ -70,42 +98,58 @@ async function gameStart (video, myCharacter, mapSize, mobs, obstacles, response
 
             const mobsPoints = responsePoints.mobsResponsePoints;
             const randomPlace = Math.floor(Math.random() * mobsPoints.length);
-            const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70);
+            const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
             mobs.push(mob);
         }
 
 
 
 
-        worker.onmessage = (event)=>{
+
+        worker.onmessage = (event) => {
             receievedKeyPoints = event.data;
+            if (receievedKeyPoints) {
+
+                leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
+                leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y;
+    
+                rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
+                rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y;
+    
+    
+    
+                // prevLeftKnee.x = leftKnee.bounds.centerX;
+                // prevLeftKnee.y = leftKnee.bounds.centerY;
+                // prevRightKnee.x = rightKnee.bounds.centerX;
+                // prevRightKnee.y = rightKnee.bounds.centerY;
+            }
         }
 
         await videoUpdate(isExecuted);
 
+
         isExecuted = true;
 
-        console.log(receievedKeyPoints);
 
 
         // Recognize key board input
-        if (userState.keys["ArrowUp"]) {
+        if (userState.keys["ArrowUp"] || userState.keys["w"]) {
             if (userState.velY > -userState.speed) {
                 userState.velY--;
             }
         }
-        if (userState.keys["ArrowDown"]) {
+        if (userState.keys["ArrowDown"] || userState.keys["s"]) {
             if (userState.velY < userState.speed) {
                 userState.velY++;
             }
         }
-        if (userState.keys["ArrowRight"]) {
+        if (userState.keys["ArrowRight"] || userState.keys["d"]) {
             myCharacter.setReverse(true);
             if (userState.velX < userState.speed) {
                 userState.velX++;
             }
         }
-        if (userState.keys["ArrowLeft"]) {
+        if (userState.keys["ArrowLeft"] || userState.keys["a"]) {
             myCharacter.setReverse(false);
             if (userState.velX > -userState.speed) {
                 userState.velX--;
@@ -201,12 +245,23 @@ async function gameStart (video, myCharacter, mapSize, mobs, obstacles, response
             paper.view.translate([-userState.velX, -userState.velY]);
         }
 
+
         if (isXChanged) {
             userState.velX = 0;
         }
         if (isYChanged) {
             userState.velY = 0;
         }
+
+
+        /* Motion Recognitio Section */
+
+        // Fix motion frame position to right bottom
+        motionFrame.bounds.x = 1600 - paper.view.matrix.tx;
+        motionFrame.bounds.y = 840 - paper.view.matrix.ty;
+
+
+
 
 
 
