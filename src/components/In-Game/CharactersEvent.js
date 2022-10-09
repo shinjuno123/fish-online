@@ -42,11 +42,10 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
     const {motionFrame,down,straight,up,standOn} = createMotionFrame();
     const { leftKnee, rightKnee } = createMotion();
     let firstPosition = 0;
-    let saying = "";
+    let movement = "";
     const screen1 = new paper.PointText();
-    const movementGage = {standOn:false, down:false,straight:false,up:false};
-    let minimumHeight = 10000;
-
+    const state = {left:false , right:false};
+    let countWalk = 0;
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
@@ -68,22 +67,19 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
     function createMotionFrame() {
         const motionFrame = new paper.Path.Rectangle(paper.view.bounds.width - imageSize.width, paper.view.bounds.height - imageSize.height, imageSize.width, imageSize.height);
         motionFrame.fillColor = "white";
+        const size = [120,80];
 
-        const standOn = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 135],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 135]);
-        standOn.strokeColor = "yellow";
-        standOn.strokeWidth = 60;
+        const standOn = new paper.Path.Rectangle([motionFrame.bounds.x,motionFrame.bounds.y + 145],size);
+        standOn.fillColor = "yellow";
 
-        const down = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 105],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 105]);
-        down.strokeColor = "red";
-        down.strokeWidth = 30;
+        const down = new paper.Path.Rectangle([motionFrame.bounds.x,motionFrame.bounds.y + 35],size);
+        down.fillColor = "red";
 
-        const straight = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 75],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 75]);
-        straight.strokeColor = "green";
-        straight.strokeWidth = 30;
+        const straight = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width /3 + 10,motionFrame.bounds.y + 35],[size[0]-20,size[1]]);
+        straight.fillColor = "green";
 
-        const up = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 45],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 45]);
-        up.strokeColor = "blue";
-        up.strokeWidth = 30;
+        const up = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3),motionFrame.bounds.y + 35],size);
+        up.fillColor = "blue";
 
 
 
@@ -132,58 +128,49 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
             if (receievedKeyPoints) {
 
                 leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
-                leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y;
+                leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 10;
 
                 rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
-                rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y;
+                rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 10;
                 if (firstPosition == 0) {
                     firstPosition = leftKnee.bounds.centerY;
                 }
 
-                if (up.intersects(leftKnee)){
-                    if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === true && movementGage.up === false){
-                        saying = "up";
-                        movementGage.up = true;
-                    }
-
+                if (up.intersects(leftKnee) || up.contains(leftKnee) || up.isInside(leftKnee)){
+                    movement = "up";
+                    state.left = true;
                 } 
-                if(straight.intersects(leftKnee)){
-                    console.log(movementGage);
-                    if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === false && movementGage.up === false){
-                        saying = "straight";
-                        movementGage.straight = true;
-                    }else if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === true && movementGage.up === true){
-                        movementGage.up = false;
-                    }
+                if(straight.intersects(leftKnee) || straight.contains(leftKnee) || straight.isInside(leftKnee)){
+                    movement = "straight";
+                    state.left = true;
                 }
-                if (down.intersects(leftKnee)){
-                    console.log(movementGage);
-                    if(movementGage.standOn === true &&movementGage.down === false && movementGage.straight === false && movementGage.up === false){
-                        movementGage.down = true;
-                        saying = "down";
-                    }else if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === true && movementGage.up === false){
-                        movementGage.straight = false;
-                        movementGage.up = false;
-                    }
+                if (down.intersects(leftKnee) || down.contains(leftKnee) || down.isInside(leftKnee)){
+                    movement = "down";
+                    state.left = true;
                 } 
-                if(standOn.intersects(leftKnee)){
-                    if(movementGage.standOn === false && movementGage.down === false && movementGage.straight === false && movementGage.up === false){
-                        movementGage.standOn = true;
-                        saying = "standOn";
-                    }
-                    movementGage.down = false;
-                    movementGage.straight = false;
-                    movementGage.up = false;
-                    
+
+                if (up.intersects(rightKnee) || up.contains(rightKnee) || up.isInside(rightKnee)){
+                    state.right = true;
+                } 
+                if(straight.intersects(rightKnee) || straight.contains(rightKnee) || straight.isInside(rightKnee)){
+                    state.right = true;
+                }
+                if (down.intersects(rightKnee) || down.contains(rightKnee) || down.isInside(rightKnee)){
+                    state.right = true;
+                }
+
+                if (state.left && state.right){
+                    countWalk += 0.5;
+                    state.left = false;
+                    state.right = false;
+
                 }
 
 
- 
 
-                minimumHeight = leftKnee.bounds.centerY;
 
                 // const screen1 = new paper.PointText();
-                screen1.content = `Down : ${movementGage.down} Straight : ${movementGage.straight}\n Up : ${movementGage.up} saying : ${saying}`;
+                screen1.content = `saying : ${movement} state : ${state.left} ${state.right} walk ${countWalk}`;
                 screen1.fontSize = 40;
                 screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
 
