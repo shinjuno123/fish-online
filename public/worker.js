@@ -9,7 +9,7 @@ const detectorConfig = {
 
 onmessage = async function (message) {
     if (message.data.isExecuted === false) {
-        detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
+        detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet);
         console.log("detector created", message.data.isExecuted);
     }
 

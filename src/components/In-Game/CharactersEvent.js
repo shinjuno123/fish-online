@@ -39,11 +39,13 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
     const imageSize = { width: 320, height: 240 };
     let receievedKeyPoints;
     let isExecuted = false;
-    const motionFrame = createMotionFrame();
+    const {motionFrame,down,straight,up,standOn} = createMotionFrame();
     const { leftKnee, rightKnee } = createMotion();
-    let prevLeftKnee = { x: motionFrame.bounds.centerX, y: motionFrame.bounds.centerY };
-    let prevRightKnee = { x: motionFrame.bounds.centerX, y: motionFrame.bounds.centerY };
-
+    let firstPosition = 0;
+    let saying = "";
+    const screen1 = new paper.PointText();
+    const movementGage = {standOn:false, down:false,straight:false,up:false};
+    let minimumHeight = 10000;
 
 
     window.requestAnimationFrame((time) => {
@@ -64,9 +66,28 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
     }
 
     function createMotionFrame() {
-        const motionFrame = paper.Path.Rectangle(paper.view.bounds.width - imageSize.width, paper.view.bounds.height - imageSize.height, imageSize.width, imageSize.height);
+        const motionFrame = new paper.Path.Rectangle(paper.view.bounds.width - imageSize.width, paper.view.bounds.height - imageSize.height, imageSize.width, imageSize.height);
         motionFrame.fillColor = "white";
-        return motionFrame
+
+        const standOn = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 135],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 135]);
+        standOn.strokeColor = "yellow";
+        standOn.strokeWidth = 60;
+
+        const down = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 105],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 105]);
+        down.strokeColor = "red";
+        down.strokeWidth = 30;
+
+        const straight = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 75],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 75]);
+        straight.strokeColor = "green";
+        straight.strokeWidth = 30;
+
+        const up = new paper.Path([motionFrame.bounds.x,motionFrame.bounds.y + 45],[motionFrame.bounds.x+motionFrame.bounds.width,motionFrame.bounds.y + 45]);
+        up.strokeColor = "blue";
+        up.strokeWidth = 30;
+
+
+
+        return {motionFrame:motionFrame,down:down,straight:straight,up:up,standOn:standOn};
     }
 
 
@@ -112,16 +133,61 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
 
                 leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
                 leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y;
-    
+
                 rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
                 rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y;
-    
-    
-    
-                // prevLeftKnee.x = leftKnee.bounds.centerX;
-                // prevLeftKnee.y = leftKnee.bounds.centerY;
-                // prevRightKnee.x = rightKnee.bounds.centerX;
-                // prevRightKnee.y = rightKnee.bounds.centerY;
+                if (firstPosition == 0) {
+                    firstPosition = leftKnee.bounds.centerY;
+                }
+
+                if (up.intersects(leftKnee)){
+                    if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === true && movementGage.up === false){
+                        saying = "up";
+                        movementGage.up = true;
+                    }
+
+                } 
+                if(straight.intersects(leftKnee)){
+                    console.log(movementGage);
+                    if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === false && movementGage.up === false){
+                        saying = "straight";
+                        movementGage.straight = true;
+                    }else if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === true && movementGage.up === true){
+                        movementGage.up = false;
+                    }
+                }
+                if (down.intersects(leftKnee)){
+                    console.log(movementGage);
+                    if(movementGage.standOn === true &&movementGage.down === false && movementGage.straight === false && movementGage.up === false){
+                        movementGage.down = true;
+                        saying = "down";
+                    }else if(movementGage.standOn === true && movementGage.down === true && movementGage.straight === true && movementGage.up === false){
+                        movementGage.straight = false;
+                        movementGage.up = false;
+                    }
+                } 
+                if(standOn.intersects(leftKnee)){
+                    if(movementGage.standOn === false && movementGage.down === false && movementGage.straight === false && movementGage.up === false){
+                        movementGage.standOn = true;
+                        saying = "standOn";
+                    }
+                    movementGage.down = false;
+                    movementGage.straight = false;
+                    movementGage.up = false;
+                    
+                }
+
+
+ 
+
+                minimumHeight = leftKnee.bounds.centerY;
+
+                // const screen1 = new paper.PointText();
+                screen1.content = `Down : ${movementGage.down} Straight : ${movementGage.straight}\n Up : ${movementGage.up} saying : ${saying}`;
+                screen1.fontSize = 40;
+                screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
+
+
             }
         }
 
