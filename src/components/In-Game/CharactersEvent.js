@@ -39,7 +39,7 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
     const imageSize = { width: 320, height: 240 };
     let receievedKeyPoints;
     let isExecuted = false;
-    const {motionFrame,down,straight,up,standOn} = createMotionFrame();
+    const {motionFrame,down,straight,up} = createMotionFrame();
     const { leftKnee, rightKnee } = createMotion();
     let firstPosition = 0;
     let movement = "";
@@ -69,8 +69,6 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
         motionFrame.fillColor = "white";
         const size = [120,80];
 
-        const standOn = new paper.Path.Rectangle([motionFrame.bounds.x,motionFrame.bounds.y + 145],size);
-        standOn.fillColor = "yellow";
 
         const down = new paper.Path.Rectangle([motionFrame.bounds.x,motionFrame.bounds.y + 35],size);
         down.fillColor = "red";
@@ -83,7 +81,7 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
 
 
 
-        return {motionFrame:motionFrame,down:down,straight:straight,up:up,standOn:standOn};
+        return {motionFrame:motionFrame,down:down,straight:straight,up:up};
     }
 
 
@@ -126,6 +124,7 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
         worker.onmessage = (event) => {
             receievedKeyPoints = event.data;
             if (receievedKeyPoints) {
+                // keyboard == false
 
                 leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
                 leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 10;
@@ -163,7 +162,21 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
                     countWalk += 0.5;
                     state.left = false;
                     state.right = false;
+                    if(countWalk === 1){
+                        countWalk = 0;
+                        // move the fish! keyboard == true
+                        if(movement === "up"){
+                            userState.keys["ArrowUp"] = true;
+                            userState.keys["ArrowLeft"] = true;
 
+                        } else if(movement === "straight"){
+                            userState.keys["ArrowLeft"] = true;
+
+                        } else if(movement === "down"){
+                            userState.keys["ArrowDown"] = true;
+                            userState.keys["ArrowLeft"] = true;
+                        }
+                    }
                 }
 
 
@@ -395,6 +408,12 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
                 userState.velY = userState.velY < userState.speed ? -userState.velY * 1.1 : -userState.velY * 0.9;
             }
         });
+
+        // Stop movement by motion recognition
+        userState.keys["ArrowDown"] = false;
+        userState.keys["ArrowUp"] = false;
+        userState.keys["ArrowLeft"] = false;
+        userState.keys["ArrowRight"] = false;
 
 
         // Check if it is game over or not
