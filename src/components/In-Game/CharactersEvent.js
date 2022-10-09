@@ -325,6 +325,12 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
         // Fix motion frame position to right bottom
         motionFrame.bounds.x = 1600 - paper.view.matrix.tx;
         motionFrame.bounds.y = 840 - paper.view.matrix.ty;
+        down.bounds.x = motionFrame.bounds.x;
+        down.bounds.y = motionFrame.bounds.y + 35;
+        straight.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width /3 + 10;
+        straight.bounds.y = motionFrame.bounds.y + 35;
+        up.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3);
+        up.bounds.y = motionFrame.bounds.y + 35;
 
 
 
