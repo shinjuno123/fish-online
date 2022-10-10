@@ -39,13 +39,14 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
     const imageSize = { width: 320, height: 240 };
     let receievedKeyPoints;
     let isExecuted = false;
-    const {motionFrame,down,straight,up} = createMotionFrame();
-    const { leftKnee, rightKnee } = createMotion();
+    const {motionFrame,down,straight,up,leftReverse,rightReverse} = createMotionFrame();
+    const { leftKnee, rightKnee} = createMotion();
     let firstPosition = 0;
     let movement = "";
     const screen1 = new paper.PointText();
     const state = {left:false , right:false};
     let countWalk = 0;
+    let isReverse = false;
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
@@ -79,9 +80,15 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
         const up = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3),motionFrame.bounds.y + 35],size);
         up.fillColor = "blue";
 
+        const leftReverse = new paper.Path.Rectangle([motionFrame.bounds.x,motionFrame.bounds.y],[30,240]);
+        leftReverse.fillColor = "yellow";
+
+        const rightReverse = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width -30 ,motionFrame.bounds.y],[30,240]);
+        rightReverse.fillColor = "pink";
 
 
-        return {motionFrame:motionFrame,down:down,straight:straight,up:up};
+
+        return {motionFrame:motionFrame,down:down,straight:straight,up:up ,leftReverse:leftReverse,rightReverse:rightReverse};
     }
 
 
@@ -107,15 +114,15 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
 
     async function update(time, mobs) {
 
-        if (prevTime + 10000 < time) {
-            prevTime = time;
-            console.log("created", mobs.length);
+        // if (prevTime + 10000 < time) {
+        //     prevTime = time;
+        //     console.log("created", mobs.length);
 
-            const mobsPoints = responsePoints.mobsResponsePoints;
-            const randomPlace = Math.floor(Math.random() * mobsPoints.length);
-            const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
-            mobs.push(mob);
-        }
+        //     const mobsPoints = responsePoints.mobsResponsePoints;
+        //     const randomPlace = Math.floor(Math.random() * mobsPoints.length);
+        //     const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
+        //     mobs.push(mob);
+        // }
 
 
 
@@ -125,12 +132,14 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
             receievedKeyPoints = event.data;
             if (receievedKeyPoints) {
                 // keyboard == false
-
+    
                 leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
-                leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 10;
+                leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 20;
 
                 rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
-                rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 10;
+                rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 20;
+
+
                 if (firstPosition == 0) {
                     firstPosition = leftKnee.bounds.centerY;
                 }
@@ -158,6 +167,17 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
                     state.right = true;
                 }
 
+
+                if (leftReverse.intersects(leftKnee) || leftReverse.contains(leftKnee) || leftReverse.isInside(leftKnee)){
+                    myCharacter.setReverse(false);
+                    isReverse = false;
+                }
+
+                if (rightReverse.intersects(rightKnee) || rightReverse.contains(rightKnee) || rightKnee.isInside(rightKnee)){
+                    myCharacter.setReverse(true);
+                    isReverse = true;
+                }
+
                 if (state.left && state.right){
                     countWalk += 0.5;
                     state.left = false;
@@ -166,15 +186,29 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
                         countWalk = 0;
                         // move the fish! keyboard == true
                         if(movement === "up"){
-                            userState.keys["ArrowUp"] = true;
-                            userState.keys["ArrowLeft"] = true;
+                            if(isReverse){
+                                userState.keys["ArrowUp"] = true;
+                                userState.keys["ArrowRight"] = true;
+                            } else{
+                                userState.keys["ArrowUp"] = true;
+                                userState.keys["ArrowLeft"] = true;
+                            }
 
                         } else if(movement === "straight"){
-                            userState.keys["ArrowLeft"] = true;
+                            if(isReverse){
+                                userState.keys["ArrowRight"] = true;
+                            } else{
+                                userState.keys["ArrowLeft"] = true;
+                            }
 
                         } else if(movement === "down"){
-                            userState.keys["ArrowDown"] = true;
-                            userState.keys["ArrowLeft"] = true;
+                            if(isReverse){
+                                userState.keys["ArrowDown"] = true;
+                                userState.keys["ArrowRight"] = true;
+                            }else{
+                                userState.keys["ArrowDown"] = true;
+                                userState.keys["ArrowLeft"] = true;
+                            }
                         }
                     }
                 }
@@ -331,6 +365,10 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
         straight.bounds.y = motionFrame.bounds.y + 35;
         up.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3);
         up.bounds.y = motionFrame.bounds.y + 35;
+        leftReverse.bounds.x = motionFrame.bounds.x;
+        leftReverse.bounds.y = motionFrame.bounds.y;
+        rightReverse.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width -30
+        rightReverse.bounds.y = motionFrame.bounds.y;
 
 
 

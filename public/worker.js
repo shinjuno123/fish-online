@@ -5,6 +5,8 @@ importScripts("https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection");
 let detector;
 const detectorConfig = {
     modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+    multiPoseMaxDimension : 320,
+    minPoseScore : 0.3
 };
 
 onmessage = async function (message) {

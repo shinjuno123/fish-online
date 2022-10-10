@@ -21,8 +21,11 @@ async function videoSetting(video,cameraOptions,selectedIndex){
     const contraints = {
         video: {
             width: {
-              max: 400
+              max: 320
             },
+            height:{
+                max:240
+            }
 
         },
         deviceId:{
