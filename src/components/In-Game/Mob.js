@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
+import paper from "paper";
 
-function Mob1 (center, reverse = true, size,paper) {
+function Mob1 (center, reverse = true, size) {
     this.center = center;
     this.group = new paper.Group();
     this.id = uuidv4();

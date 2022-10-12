@@ -1,6 +1,6 @@
+import paper from "paper";
 
-
-function SeaAnemone(x, y, scale, degree,paper) {
+function SeaAnemone (x, y, scale, degree) {
     this.group = new paper.Group();
 
 
@@ -16,7 +16,7 @@ function SeaAnemone(x, y, scale, degree,paper) {
         this.group.rotate(degree, this.group.bounds.bottomCenter);
 
         this.group.scale(scale);
-    }
+    };
 
 
     this.createBody = function () {
@@ -31,8 +31,8 @@ function SeaAnemone(x, y, scale, degree,paper) {
         this.group.addChild(body);
 
 
-    
-    }
+
+    };
 
 
     this.createTentacle = function () {
@@ -68,7 +68,7 @@ function SeaAnemone(x, y, scale, degree,paper) {
         }
 
         tentacle.remove();
-    }
+    };
 
 
     this.createBelly = function () {
@@ -79,7 +79,7 @@ function SeaAnemone(x, y, scale, degree,paper) {
 
 
         this.group.addChild(belly);
-    }
+    };
 
     this.constructor();
 

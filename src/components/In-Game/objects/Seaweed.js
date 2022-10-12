@@ -2,7 +2,7 @@ import paper from "paper";
 
 
 
-function Seaweed(x, y, scale, degree,paper) {
+function Seaweed (x, y, scale, degree) {
     this.group = new paper.Group();
     this.path = new paper.Path([50, 100], [50, 60], [50, 20], [60, 20], [60, 60], [60, 100]);
 
@@ -42,7 +42,7 @@ function Seaweed(x, y, scale, degree,paper) {
 
         this.group.bounds.height *= scale;
         this.group.rotate(degree, this.group.bounds.bottomCenter);
-    }
+    };
 
     this.constructor();
 
