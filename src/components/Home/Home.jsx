@@ -20,7 +20,7 @@ function Home () {
         <div className="home">
             <SettingButton />
             <Header mode={ mode } />
-            <Main />
+            <Main mode={ mode } />
             <ModechageButton currentMode={ mode } changeMode={ handleModeChange } />
             <Footer />
         </div>

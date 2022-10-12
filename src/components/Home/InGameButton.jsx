@@ -1,11 +1,14 @@
 import React from "react";
 
 function InGameButton (props) {
-
     function handleClick () {
+        const currentMode = props.mode;
+
         if (props.isActivated) {
-            window.location.href = process.env.PUBLIC_URL + "/game";
+            window.location.href = `${ process.env.PUBLIC_URL }/game/${ currentMode }`;
         }
+
+
     }
 
     return (

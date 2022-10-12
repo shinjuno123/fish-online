@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { startyMovementHandler } from "./CharactersEvent";
+import paper from "paper";
 
 // Starty(fish character in game) class
-function Starty(center, isReverse = false, size,paper) {
+function Starty (center, isReverse = false, size) {
     this.head = { x: center.x - 100, y: center.y };
     this.group = new paper.Group();
     this.isReverse = isReverse;

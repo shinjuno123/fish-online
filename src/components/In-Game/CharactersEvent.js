@@ -1,17 +1,12 @@
 import { Mob1 } from "./Mob";
+import paper from "paper";
 
-// import * as tf from '@tensorflow/tfjs-core';
-// // Register one of the TF.js backends.
-// import '@tensorflow/tfjs-backend-webgl';
-// // import '@tensorflow/tfjs-backend-wasm';
 
-// simulate key board
-// document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
 
 // object's position depending on the relative position of fish
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 5, friction: 0.98, keys: {} };
 
-function startyMovementHandler(event) {
+function startyMovementHandler (event) {
 
     event.preventDefault();
 
@@ -28,31 +23,32 @@ function startyMovementHandler(event) {
     return;
 }
 
-async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
+async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
 
     let isGameOver = false;
     let hideTime = 0;
     let prevTime = -10001;
-    const worker = new Worker('worker.js');
+    const worker = new Worker(process.env.PUBLIC_URL + '/worker.js');
     const tmpCanvas = document.createElement("canvas");
     const imageSize = { width: 320, height: 240 };
     let receievedKeyPoints;
     let isExecuted = false;
-    const {motionFrame,down,straight,up,leftReverse,rightReverse} = createMotionFrame();
-    const { leftKnee, rightKnee} = createMotion();
     let firstPosition = 0;
     let movement = "";
     const screen1 = new paper.PointText();
-    const state = {left:false , right:false};
+    const state = { left: false, right: false };
     let countWalk = 0;
     let isReverse = false;
+    const { motionFrame, down, straight, up, leftReverse, rightReverse } = (mode === "exercise") ? createMotionFrame() : { motionFrame: null, down: null, straight: null, up: null, leftReverse: null, rightReverse: null };
+    const { leftKnee, rightKnee } = (mode === "exercise") ? createMotion() : { leftKnee: null, rightKnee: null };
+
 
     window.requestAnimationFrame((time) => {
         update(time, mobs);
     });
 
-    async function videoUpdate(isExecuted) {
+    async function videoUpdate (isExecuted) {
         const ctx = tmpCanvas.getContext('2d');
         ctx.drawImage(video.current, 0, 0);
         const contents = {
@@ -65,34 +61,34 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
 
     }
 
-    function createMotionFrame() {
+    function createMotionFrame () {
         const motionFrame = new paper.Path.Rectangle(paper.view.bounds.width - imageSize.width, paper.view.bounds.height - imageSize.height, imageSize.width, imageSize.height);
         motionFrame.fillColor = "white";
-        const size = [120,80];
+        const size = [120, 80];
 
 
-        const down = new paper.Path.Rectangle([motionFrame.bounds.x,motionFrame.bounds.y + 35],size);
+        const down = new paper.Path.Rectangle([motionFrame.bounds.x, motionFrame.bounds.y + 35], size);
         down.fillColor = "red";
 
-        const straight = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width /3 + 10,motionFrame.bounds.y + 35],[size[0]-20,size[1]]);
+        const straight = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width / 3 + 10, motionFrame.bounds.y + 35], [size[0] - 20, size[1]]);
         straight.fillColor = "green";
 
-        const up = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3),motionFrame.bounds.y + 35],size);
+        const up = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3), motionFrame.bounds.y + 35], size);
         up.fillColor = "blue";
 
-        const leftReverse = new paper.Path.Rectangle([motionFrame.bounds.x,motionFrame.bounds.y],[30,240]);
+        const leftReverse = new paper.Path.Rectangle([motionFrame.bounds.x, motionFrame.bounds.y], [30, 240]);
         leftReverse.fillColor = "yellow";
 
-        const rightReverse = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width -30 ,motionFrame.bounds.y],[30,240]);
+        const rightReverse = new paper.Path.Rectangle([motionFrame.bounds.x + motionFrame.bounds.width - 30, motionFrame.bounds.y], [30, 240]);
         rightReverse.fillColor = "pink";
 
 
 
-        return {motionFrame:motionFrame,down:down,straight:straight,up:up ,leftReverse:leftReverse,rightReverse:rightReverse};
+        return { motionFrame: motionFrame, down: down, straight: straight, up: up, leftReverse: leftReverse, rightReverse: rightReverse };
     }
 
 
-    function createMotion() {
+    function createMotion () {
 
         const leftKnee = paper.Path.Circle([motionFrame.bounds.centerX, motionFrame.bounds.centerY], 3);
         leftKnee.selected = true;
@@ -105,130 +101,126 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
 
         return {
             leftKnee: leftKnee, rightKnee: rightKnee
-        }
+        };
     }
 
 
+    worker.onmessage = (event) => {
+        receievedKeyPoints = event.data;
+        if (receievedKeyPoints) {
+            // keyboard == false
 
-    // mobs
+            leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
+            leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 20;
 
-    async function update(time, mobs) {
-
-        // if (prevTime + 10000 < time) {
-        //     prevTime = time;
-        //     console.log("created", mobs.length);
-
-        //     const mobsPoints = responsePoints.mobsResponsePoints;
-        //     const randomPlace = Math.floor(Math.random() * mobsPoints.length);
-        //     const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
-        //     mobs.push(mob);
-        // }
+            rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
+            rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 20;
 
 
+            if (firstPosition == 0) {
+                firstPosition = leftKnee.bounds.centerY;
+            }
+
+            if (up.intersects(leftKnee) || up.contains(leftKnee) || up.isInside(leftKnee)) {
+                movement = "up";
+                state.left = true;
+            }
+            if (straight.intersects(leftKnee) || straight.contains(leftKnee) || straight.isInside(leftKnee)) {
+                movement = "straight";
+                state.left = true;
+            }
+            if (down.intersects(leftKnee) || down.contains(leftKnee) || down.isInside(leftKnee)) {
+                movement = "down";
+                state.left = true;
+            }
+
+            if (up.intersects(rightKnee) || up.contains(rightKnee) || up.isInside(rightKnee)) {
+                state.right = true;
+            }
+            if (straight.intersects(rightKnee) || straight.contains(rightKnee) || straight.isInside(rightKnee)) {
+                state.right = true;
+            }
+            if (down.intersects(rightKnee) || down.contains(rightKnee) || down.isInside(rightKnee)) {
+                state.right = true;
+            }
 
 
+            if (leftReverse.intersects(leftKnee) || leftReverse.contains(leftKnee) || leftReverse.isInside(leftKnee)) {
+                myCharacter.setReverse(false);
+                isReverse = false;
+            }
 
-        worker.onmessage = (event) => {
-            receievedKeyPoints = event.data;
-            if (receievedKeyPoints) {
-                // keyboard == false
-    
-                leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
-                leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 20;
+            if (rightReverse.intersects(rightKnee) || rightReverse.contains(rightKnee) || rightKnee.isInside(rightKnee)) {
+                myCharacter.setReverse(true);
+                isReverse = true;
+            }
 
-                rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
-                rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 20;
+            if (state.left && state.right) {
+                countWalk += 0.5;
+                state.left = false;
+                state.right = false;
+                if (countWalk === 1) {
+                    countWalk = 0;
+                    // move the fish! keyboard == true
+                    if (movement === "up") {
+                        if (isReverse) {
+                            userState.keys["ArrowUp"] = true;
+                            userState.keys["ArrowRight"] = true;
+                        } else {
+                            userState.keys["ArrowUp"] = true;
+                            userState.keys["ArrowLeft"] = true;
+                        }
 
+                    } else if (movement === "straight") {
+                        if (isReverse) {
+                            userState.keys["ArrowRight"] = true;
+                        } else {
+                            userState.keys["ArrowLeft"] = true;
+                        }
 
-                if (firstPosition == 0) {
-                    firstPosition = leftKnee.bounds.centerY;
-                }
-
-                if (up.intersects(leftKnee) || up.contains(leftKnee) || up.isInside(leftKnee)){
-                    movement = "up";
-                    state.left = true;
-                } 
-                if(straight.intersects(leftKnee) || straight.contains(leftKnee) || straight.isInside(leftKnee)){
-                    movement = "straight";
-                    state.left = true;
-                }
-                if (down.intersects(leftKnee) || down.contains(leftKnee) || down.isInside(leftKnee)){
-                    movement = "down";
-                    state.left = true;
-                } 
-
-                if (up.intersects(rightKnee) || up.contains(rightKnee) || up.isInside(rightKnee)){
-                    state.right = true;
-                } 
-                if(straight.intersects(rightKnee) || straight.contains(rightKnee) || straight.isInside(rightKnee)){
-                    state.right = true;
-                }
-                if (down.intersects(rightKnee) || down.contains(rightKnee) || down.isInside(rightKnee)){
-                    state.right = true;
-                }
-
-
-                if (leftReverse.intersects(leftKnee) || leftReverse.contains(leftKnee) || leftReverse.isInside(leftKnee)){
-                    myCharacter.setReverse(false);
-                    isReverse = false;
-                }
-
-                if (rightReverse.intersects(rightKnee) || rightReverse.contains(rightKnee) || rightKnee.isInside(rightKnee)){
-                    myCharacter.setReverse(true);
-                    isReverse = true;
-                }
-
-                if (state.left && state.right){
-                    countWalk += 0.5;
-                    state.left = false;
-                    state.right = false;
-                    if(countWalk === 1){
-                        countWalk = 0;
-                        // move the fish! keyboard == true
-                        if(movement === "up"){
-                            if(isReverse){
-                                userState.keys["ArrowUp"] = true;
-                                userState.keys["ArrowRight"] = true;
-                            } else{
-                                userState.keys["ArrowUp"] = true;
-                                userState.keys["ArrowLeft"] = true;
-                            }
-
-                        } else if(movement === "straight"){
-                            if(isReverse){
-                                userState.keys["ArrowRight"] = true;
-                            } else{
-                                userState.keys["ArrowLeft"] = true;
-                            }
-
-                        } else if(movement === "down"){
-                            if(isReverse){
-                                userState.keys["ArrowDown"] = true;
-                                userState.keys["ArrowRight"] = true;
-                            }else{
-                                userState.keys["ArrowDown"] = true;
-                                userState.keys["ArrowLeft"] = true;
-                            }
+                    } else if (movement === "down") {
+                        if (isReverse) {
+                            userState.keys["ArrowDown"] = true;
+                            userState.keys["ArrowRight"] = true;
+                        } else {
+                            userState.keys["ArrowDown"] = true;
+                            userState.keys["ArrowLeft"] = true;
                         }
                     }
                 }
-
-
-
-
-                // const screen1 = new paper.PointText();
-                screen1.content = `saying : ${movement} state : ${state.left} ${state.right} walk ${countWalk}`;
-                screen1.fontSize = 40;
-                screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
-
-
             }
+
+
+            screen1.content = `saying : ${ movement } state : ${ state.left } ${ state.right } walk ${ countWalk }`;
+            screen1.fontSize = 40;
+            screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
+
+
+        }
+    };
+
+
+    async function update (time, mobs) {
+
+        if (prevTime + 10000 < time) {
+            prevTime = time;
+            console.log("created", mobs.length);
+
+            const mobsPoints = responsePoints.mobsResponsePoints;
+            const randomPlace = Math.floor(Math.random() * mobsPoints.length);
+            const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
+            mobs.push(mob);
         }
 
-        await videoUpdate(isExecuted);
 
 
-        isExecuted = true;
+
+
+        if (mode === "exercise") {
+            await videoUpdate(isExecuted);
+            isExecuted = true;
+        }
+
 
 
 
@@ -356,19 +348,22 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
 
         /* Motion Recognitio Section */
 
-        // Fix motion frame position to right bottom
-        motionFrame.bounds.x = 1600 - paper.view.matrix.tx;
-        motionFrame.bounds.y = 840 - paper.view.matrix.ty;
-        down.bounds.x = motionFrame.bounds.x;
-        down.bounds.y = motionFrame.bounds.y + 35;
-        straight.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width /3 + 10;
-        straight.bounds.y = motionFrame.bounds.y + 35;
-        up.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3);
-        up.bounds.y = motionFrame.bounds.y + 35;
-        leftReverse.bounds.x = motionFrame.bounds.x;
-        leftReverse.bounds.y = motionFrame.bounds.y;
-        rightReverse.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width -30
-        rightReverse.bounds.y = motionFrame.bounds.y;
+        if (mode === "exercise") {
+            // Fix motion frame position to right bottom
+            motionFrame.bounds.x = 1600 - paper.view.matrix.tx;
+            motionFrame.bounds.y = 840 - paper.view.matrix.ty;
+            down.bounds.x = motionFrame.bounds.x;
+            down.bounds.y = motionFrame.bounds.y + 35;
+            straight.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width / 3 + 10;
+            straight.bounds.y = motionFrame.bounds.y + 35;
+            up.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width * (2 / 3);
+            up.bounds.y = motionFrame.bounds.y + 35;
+            leftReverse.bounds.x = motionFrame.bounds.x;
+            leftReverse.bounds.y = motionFrame.bounds.y;
+            rightReverse.bounds.x = motionFrame.bounds.x + motionFrame.bounds.width - 30;
+            rightReverse.bounds.y = motionFrame.bounds.y;
+        }
+
 
 
 
@@ -454,10 +449,12 @@ async function gameStart(paper, video, myCharacter, mapSize, mobs, obstacles, re
         });
 
         // Stop movement by motion recognition
-        userState.keys["ArrowDown"] = false;
-        userState.keys["ArrowUp"] = false;
-        userState.keys["ArrowLeft"] = false;
-        userState.keys["ArrowRight"] = false;
+        if (mode === "exercise") {
+            userState.keys["ArrowDown"] = false;
+            userState.keys["ArrowUp"] = false;
+            userState.keys["ArrowLeft"] = false;
+            userState.keys["ArrowRight"] = false;
+        }
 
 
         // Check if it is game over or not

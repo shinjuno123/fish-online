@@ -9,7 +9,8 @@ function App () {
       <Routes>
         <Route path="/">
           <Route index element={ <Home /> }></Route>
-          <Route path="game" element={ <Game /> }></Route>
+          <Route path="game/keyboard" element={ <Game /> }></Route>
+          <Route path="game/exercise" element={ <Game /> }></Route>
         </Route>
       </Routes>
     </BrowserRouter>

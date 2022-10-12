@@ -2,11 +2,11 @@ import React from "react";
 import InGameButton from "./InGameButton";
 
 
-function Main () {
+function Main (props) {
     return (
         <main className="main">
-            <InGameButton isActivated={ false } text="MultiPlay (See you Soon!)" />
-            <InGameButton isActivated={ true } text="SinglePlay" />
+            <InGameButton mode={ props.mode } isActivated={ false } text="MultiPlay (See you Soon!)" />
+            <InGameButton mode={ props.mode } isActivated={ true } text="SinglePlay" />
         </main>
     );
 }
