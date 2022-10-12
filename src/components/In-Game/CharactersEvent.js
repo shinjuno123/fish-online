@@ -23,6 +23,12 @@ function startyMovementHandler (event) {
     return;
 }
 
+
+function getMatrix (x1, y1, x2, y2) {
+    return { tx: x1 - x2, ty: y1 - y2 };
+}
+
+
 async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
 
@@ -105,6 +111,9 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
     }
 
 
+
+
+
     worker.onmessage = (event) => {
         receievedKeyPoints = event.data;
         if (receievedKeyPoints) {
@@ -117,7 +126,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
             rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 20;
 
 
-            if (firstPosition == 0) {
+            if (firstPosition === 0) {
                 firstPosition = leftKnee.bounds.centerY;
             }
 
@@ -202,7 +211,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
     async function update (time, mobs) {
 
-        if (prevTime + 10000 < time) {
+        if (prevTime + 10000 < time && mobs.length <= 100) {
             prevTime = time;
             console.log("created", mobs.length);
 
@@ -305,37 +314,13 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
 
-        // Recognize map boundary and check if it is wall 
-        const isWall = { x: false, y: false };
-
-        if (nextPosition.x > mapSize[0] - myCharacter.getSize().width / 2) {
-            nextPosition.x = mapSize[0] - myCharacter.getSize().width / 2;
-            isWall.x = true;
-        } else if (nextPosition.x <= myCharacter.getSize().width / 2) {
-            nextPosition.x = myCharacter.getSize().width / 2;
-            isWall.x = true;
-        }
-
-        if (nextPosition.y > mapSize[1] / 2 - myCharacter.getSize().height / 2) {
-            nextPosition.y = mapSize[1] / 2 - myCharacter.getSize().height / 2;
-            isWall.y = true;
-        } else if (nextPosition.y <= -mapSize[1] / 2 + myCharacter.getSize().height / 2) {
-            nextPosition.y = -mapSize[1] / 2 + myCharacter.getSize().height / 2;
-            isWall.y = true;
-        }
+        // move screen when user fish gets a border of virtual Rectangle
+        const { tx, ty } = getMatrix(myCharacter.group.bounds.center.x, myCharacter.group.bounds.center.y, myCharacter.rx, myCharacter.ry);
+        myCharacter.rx = myCharacter.group.bounds.center.x;
+        myCharacter.ry = myCharacter.group.bounds.center.y;
+        paper.view.translate([-tx, -ty]);
 
 
-
-        // Stop moving camera in case of meeting boundary
-        if (isWall.x === true && isWall.y === true) {
-            paper.view.translate([0, 0]);
-        } else if (isWall.x === false && isWall.y === true) {
-            paper.view.translate([-userState.velX, 0]);
-        } else if (isWall.x === true && isWall.y === false) {
-            paper.view.translate([0, -userState.velY]);
-        } else {
-            paper.view.translate([-userState.velX, -userState.velY]);
-        }
 
 
         if (isXChanged) {

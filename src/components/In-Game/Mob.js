@@ -56,7 +56,7 @@ function Mob1 (center, reverse = true, size) {
     };
 
     this.setReverse = function (isReverse = false) {
-        if (isReverse && !this.isReverse || !isReverse && this.isReverse) {
+        if ((isReverse && !this.isReverse) || (!isReverse && this.isReverse)) {
             this.group.scale(-1, 1);
         } else {
             this.group.scale(1, 1);

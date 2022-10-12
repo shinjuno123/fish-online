@@ -10,6 +10,8 @@ function Starty (center, isReverse = false, size) {
     this.id = uuidv4();
     this.ratio = { width: 1, height: 0.378306 };
     this.size = size;
+    this.rx = center.x;
+    this.ry = center.y;
 
     this.constructor = function () {
         this.group = new paper.Group();
@@ -60,7 +62,7 @@ function Starty (center, isReverse = false, size) {
 
     this.setReverse = function (isReverse = false) {
         // isReverse === true -> arrowRight, 
-        if (isReverse && !this.isReverse || !isReverse && this.isReverse) {
+        if ((isReverse && !this.isReverse) || (!isReverse && this.isReverse)) {
             this.group.scale(-1, 1);
         } else {
             this.group.scale(1, 1);
