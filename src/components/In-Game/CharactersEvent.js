@@ -278,8 +278,16 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
         mobs = mobs.map(function (mob) {
             if (mob.selectedPath < 2) {
-                // { x: 100, y: 0, speed: 0.01, t: 0; };
                 const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t });
+                mob.t = mobMovedPosition.t;
+                mob.group.bounds.centerX = mobMovedPosition.x;
+                mob.group.bounds.centerY = mobMovedPosition.y;
+
+                if (mob.t > 1) {
+                    mob.t = 0;
+                    mob.currentPoint = paths[mob.selectedPath].length - 1 !== mob.currentPoint ? mob.currentPoint + 1 : 0;
+                    console.log(mob.currentPoint);
+                }
                 // console.log(mobMovedPosition);
             }
 

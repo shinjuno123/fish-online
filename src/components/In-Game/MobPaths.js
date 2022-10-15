@@ -119,9 +119,6 @@ function moveMobInBezierCurve (points, ball) {
     let xt = ax * (t * t * t) + bx * (t * t) + cx * t + p0.x;
     let yt = ay * (t * t * t) + by * (t * t) + cy * t + p0.y;
 
-    if (ball.t > 1) {
-        ball.t = 1;
-    }
 
     ball.x = xt;
     ball.y = yt;
