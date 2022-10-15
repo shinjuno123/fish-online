@@ -30,6 +30,8 @@ function Game () {
 
         // Game start
         gameStart(mode, video, starty, mapSize, [], obstacles, responsePoints, attackers, hiders);
+
+        // paper.view.scale(0.3);
     }
 
 

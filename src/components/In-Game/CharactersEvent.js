@@ -2,9 +2,9 @@ import { Mob1 } from "./Mob";
 import paper from "paper";
 
 
-
 // object's position depending on the relative position of fish
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 5, friction: 0.98, keys: {} };
+
 
 function startyMovementHandler (event) {
 
@@ -28,6 +28,55 @@ function getMatrix (x1, y1, x2, y2) {
     return { tx: x1 - x2, ty: y1 - y2 };
 }
 
+const ball = { x: 100, y: 0, speed: 0.01, t: 0 };
+let points1 = [
+    { x: ball.x, y: ball.y },
+    { x: 120, y: 200 },
+    { x: 125, y: 295 },
+    { x: 170, y: 350 }
+];
+
+let points2 = [
+    { x: points1[3].x, y: points1[3].y },
+    { x: 320, y: 500 },
+    { x: 550, y: 500 },
+    { x: 800, y: 630 }
+];
+
+const pointsCollection = [points1, points2];
+
+
+function moveBallInBezierCurve (points) {
+    let [p0, p1, p2, p3] = points;
+
+    let cx = 3 * (p1.x - p0.x);
+    let bx = 3 * (p2.x - p1.x) - cx;
+    let ax = p3.x - p0.x - cx - bx;
+
+    let cy = 3 * (p1.y - p0.y);
+    let by = 3 * (p2.y - p1.y) - cy;
+    let ay = p3.y - p0.y - cy - by;
+
+    let t = ball.t;
+
+    ball.t += ball.speed;
+
+    let xt = ax * (t * t * t) + bx * (t * t) + cx * t + p0.x;
+    let yt = ay * (t * t * t) + by * (t * t) + cy * t + p0.y;
+
+    if (ball.t > 1) {
+        ball.t = 1;
+    }
+
+    ball.x = xt;
+    ball.y = yt;
+
+}
+
+
+
+
+
 
 async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
 
@@ -50,9 +99,43 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
     const { leftKnee, rightKnee } = (mode === "exercise") ? createMotion() : { leftKnee: null, rightKnee: null };
 
 
+
+    /*  Test Making path using Bezier curve*/
+
+    pointsCollection.forEach(function (points) {
+        points.forEach(function (point) {
+            const pointDot = new paper.Path.Circle([point.x, point.y], 3);
+            pointDot.fillColor = "black";
+            pointDot.selected = true;
+            const coordinate = new paper.PointText([point.x, point.y - 10]);
+            coordinate.content = `[${ point.x },${ point.y }]`;
+            coordinate.fillColor = "black";
+            coordinate.justification = "center";
+            coordinate.fontSize = 20;
+            coordinate.fontWeight = 5;
+        });
+    });
+
+
+    for (let points of pointsCollection) {
+        let currentPoints = points;
+        while (ball.t < 1) {
+            let prevBall = Object.assign({}, ball);
+            moveBallInBezierCurve(currentPoints);
+            const line = new paper.Path([prevBall.x, prevBall.y], [ball.x, ball.y]);
+            line.strokeWidth = 2;
+            line.strokeColor = "red";
+        }
+
+        ball.t = 0;
+    }
+
+
+
     window.requestAnimationFrame((time) => {
         update(time, mobs);
     });
+
 
     async function videoUpdate (isExecuted) {
         const ctx = tmpCanvas.getContext('2d');
@@ -319,7 +402,6 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
         myCharacter.rx = myCharacter.group.bounds.center.x;
         myCharacter.ry = myCharacter.group.bounds.center.y;
         paper.view.translate([-tx, -ty]);
-
 
 
 
