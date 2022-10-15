@@ -1,5 +1,7 @@
 import { Mob1 } from "./Mob";
 import paper from "paper";
+import { paths } from "./MobPaths";
+import { moveMobInBezierCurve } from "./MobPaths";
 
 
 // object's position depending on the relative position of fish
@@ -28,52 +30,47 @@ function getMatrix (x1, y1, x2, y2) {
     return { tx: x1 - x2, ty: y1 - y2 };
 }
 
-const ball = { x: 100, y: 0, speed: 0.01, t: 0 };
-let points1 = [
-    { x: ball.x, y: ball.y },
-    { x: 120, y: 200 },
-    { x: 125, y: 295 },
-    { x: 170, y: 350 }
-];
-
-let points2 = [
-    { x: points1[3].x, y: points1[3].y },
-    { x: 320, y: 500 },
-    { x: 550, y: 500 },
-    { x: 800, y: 630 }
-];
-
-const pointsCollection = [points1, points2];
 
 
-function moveBallInBezierCurve (points) {
-    let [p0, p1, p2, p3] = points;
+let prevPath = 0;
 
-    let cx = 3 * (p1.x - p0.x);
-    let bx = 3 * (p2.x - p1.x) - cx;
-    let ax = p3.x - p0.x - cx - bx;
+function drawPath (path, color, currentPath) {
+    let testFish = { x: 100, y: 0, speed: 0.01, t: 0 };
 
-    let cy = 3 * (p1.y - p0.y);
-    let by = 3 * (p2.y - p1.y) - cy;
-    let ay = p3.y - p0.y - cy - by;
+    path.forEach(function (points, index) {
 
-    let t = ball.t;
+        points.forEach(function (point) {
+            const pointDot = new paper.Path.Circle([point.x, point.y], 3);
+            pointDot.fillColor = "black";
+            pointDot.selected = true;
+            const coordinate = new paper.PointText([point.x, point.y - 10]);
+            coordinate.content = `[${ point.x },${ point.y }]`;
+            coordinate.fillColor = "black";
+            coordinate.justification = "center";
+            coordinate.fontSize = 20;
+            coordinate.fontWeight = 5;
+        });
 
-    ball.t += ball.speed;
+        let currentPoints = points;
+        while (testFish.t < 1) {
+            let prevBall = Object.assign({}, testFish);
 
-    let xt = ax * (t * t * t) + bx * (t * t) + cx * t + p0.x;
-    let yt = ay * (t * t * t) + by * (t * t) + cy * t + p0.y;
+            testFish = moveMobInBezierCurve(currentPoints, testFish);
 
-    if (ball.t > 1) {
-        ball.t = 1;
-    }
+            if (prevPath !== currentPath) {
+                prevPath = currentPath;
+                prevBall = Object.assign({}, testFish);
+            }
 
-    ball.x = xt;
-    ball.y = yt;
+            const line = new paper.Path([prevBall.x, prevBall.y], [testFish.x, testFish.y]);
+            line.strokeWidth = 2;
+            line.strokeColor = color;
+        }
+        prevPath = currentPath;
+        testFish.t = 0;
+    });
 
 }
-
-
 
 
 
@@ -99,37 +96,11 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
     const { leftKnee, rightKnee } = (mode === "exercise") ? createMotion() : { leftKnee: null, rightKnee: null };
 
 
-
+    let colors = ["red", "blue"];
     /*  Test Making path using Bezier curve*/
-
-    pointsCollection.forEach(function (points) {
-        points.forEach(function (point) {
-            const pointDot = new paper.Path.Circle([point.x, point.y], 3);
-            pointDot.fillColor = "black";
-            pointDot.selected = true;
-            const coordinate = new paper.PointText([point.x, point.y - 10]);
-            coordinate.content = `[${ point.x },${ point.y }]`;
-            coordinate.fillColor = "black";
-            coordinate.justification = "center";
-            coordinate.fontSize = 20;
-            coordinate.fontWeight = 5;
-        });
+    paths.forEach(function (path, index) {
+        drawPath(path, colors[index], index);
     });
-
-
-    for (let points of pointsCollection) {
-        let currentPoints = points;
-        while (ball.t < 1) {
-            let prevBall = Object.assign({}, ball);
-            moveBallInBezierCurve(currentPoints);
-            const line = new paper.Path([prevBall.x, prevBall.y], [ball.x, ball.y]);
-            line.strokeWidth = 2;
-            line.strokeColor = "red";
-        }
-
-        ball.t = 0;
-    }
-
 
 
     window.requestAnimationFrame((time) => {
@@ -301,11 +272,38 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
             const mobsPoints = responsePoints.mobsResponsePoints;
             const randomPlace = Math.floor(Math.random() * mobsPoints.length);
             const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
+            mob.selectedPath = randomPlace;
             mobs.push(mob);
         }
 
+        mobs = mobs.map(function (mob) {
+            if (mob.selectedPath < 2) {
+                // { x: 100, y: 0, speed: 0.01, t: 0; };
+                const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t });
+                // console.log(mobMovedPosition);
+            }
 
 
+            return mob;
+        });
+
+
+
+        // while (testFish.t < 1) {
+        //     let prevBall = Object.assign({}, testFish);
+
+        //     testFish = moveMobInBezierCurve(currentPoints, testFish);
+
+        //     if (prevPath !== currentPath) {
+        //         prevPath = currentPath;
+        //         prevBall = Object.assign({}, testFish);
+        //     }
+
+        //     const line = new paper.Path([prevBall.x, prevBall.y], [testFish.x, testFish.y]);
+        //     console.log([prevBall.x, prevBall.y], [testFish.x, testFish.y]);
+        //     line.strokeWidth = 2;
+        //     line.strokeColor = color;
+        // }
 
 
         if (mode === "exercise") {

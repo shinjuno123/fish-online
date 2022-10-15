@@ -9,6 +9,10 @@ function Mob1 (center, reverse = true, size) {
     this.size = size;
     this.ratio = { width: 1, height: 0.5688288 };
     this.hideTime = 0;
+    this.selectedPath = null;
+    this.t = 0;
+    this.currentPoint = 0;
+
 
 
     this.constructor = function () {
