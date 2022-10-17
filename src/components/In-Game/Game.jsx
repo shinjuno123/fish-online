@@ -26,13 +26,13 @@ function Game () {
         const { mapSize, obstacles, responsePoints, attackers, hiders } = testMap();
 
         // Call user character
-        const starty = new Starty({ x: window.screen.availWidth, y: window.screen.availHeight / 2 }, false, 70);
+        const starty = new Starty({ x: window.screen.availWidth, y: -window.screen.availHeight / 2 }, false, 70);
 
         // Game start
         gameStart(mode, video, starty, mapSize, [], obstacles, responsePoints, attackers, hiders);
 
         paper.view.scale(0.5);
-        paper.view.translate([-window.screen.availWidth / 2, window.screen.availHeight / 2 - 200]);
+        paper.view.translate([-window.screen.availWidth / 2, window.screen.availHeight / 2 - 100]);
     }
 
 
