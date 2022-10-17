@@ -35,7 +35,7 @@ function getMatrix (x1, y1, x2, y2) {
 let prevPath = 0;
 
 function drawPath (path, color, currentPath) {
-    let testFish = { x: 2972, y: 0, speed: 0.01, t: 0 };
+    let testFish = { x: 1536, y: 724, speed: 0.01, t: 0 };
 
     path.forEach(function (points, index) {
 

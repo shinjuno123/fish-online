@@ -8,10 +8,10 @@ body{
 
 /* Scale canvas with resize attribute to full size */
 
-
 .game #game-canvas{
     height: 100%;
     width: 100%;
+    background-color: #47B5FF;
 }
 
 
