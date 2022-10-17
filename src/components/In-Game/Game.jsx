@@ -32,7 +32,7 @@ function Game () {
         gameStart(mode, video, starty, mapSize, [], obstacles, responsePoints, attackers, hiders);
 
         paper.view.scale(0.5);
-        paper.view.translate([-window.screen.availWidth / 2, window.screen.availHeight / 2]);
+        paper.view.translate([-window.screen.availWidth / 2, window.screen.availHeight / 2 - 200]);
     }
 
 

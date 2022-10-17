@@ -35,7 +35,7 @@ function getMatrix (x1, y1, x2, y2) {
 let prevPath = 0;
 
 function drawPath (path, color, currentPath) {
-    let testFish = { x: 100, y: 0, speed: 0.01, t: 0 };
+    let testFish = { x: 2972, y: 0, speed: 0.01, t: 0 };
 
     path.forEach(function (points, index) {
 
@@ -96,7 +96,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
     const { leftKnee, rightKnee } = (mode === "exercise") ? createMotion() : { leftKnee: null, rightKnee: null };
 
 
-    let colors = ["red", "blue"];
+    let colors = ["red", "blue", "yellow", "lightgreen", "black"];
     /*  Test Making path using Bezier curve*/
     paths.forEach(function (path, index) {
         drawPath(path, colors[index], index);
@@ -265,17 +265,19 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
     async function update (time, mobs) {
 
-        if (prevTime + 10000 < time && mobs.length <= 100) {
-            prevTime = time;
-            console.log("created", mobs.length);
+        // if (prevTime + 10000 < time && mobs.length <= 100) {
+        //     prevTime = time;
+        //     console.log("created", mobs.length);
 
-            const mobsPoints = responsePoints.mobsResponsePoints;
-            const randomPlace = Math.floor(Math.random() * mobsPoints.length);
-            const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
-            mob.selectedPath = randomPlace;
-            mobs.push(mob);
-        }
+        //     const mobsPoints = responsePoints.mobsResponsePoints;
+        //     const randomPlace = Math.floor(Math.random() * mobsPoints.length);
+        //     const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
+        //     mob.selectedPath = randomPlace;
+        //     mobs.push(mob);
+        // }
 
+
+        // Move mob fishes following the path made by bezier curves
         mobs = mobs.map(function (mob) {
             if (mob.selectedPath < 2) {
                 const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t });
@@ -297,21 +299,6 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
 
-        // while (testFish.t < 1) {
-        //     let prevBall = Object.assign({}, testFish);
-
-        //     testFish = moveMobInBezierCurve(currentPoints, testFish);
-
-        //     if (prevPath !== currentPath) {
-        //         prevPath = currentPath;
-        //         prevBall = Object.assign({}, testFish);
-        //     }
-
-        //     const line = new paper.Path([prevBall.x, prevBall.y], [testFish.x, testFish.y]);
-        //     console.log([prevBall.x, prevBall.y], [testFish.x, testFish.y]);
-        //     line.strokeWidth = 2;
-        //     line.strokeColor = color;
-        // }
 
 
         if (mode === "exercise") {
