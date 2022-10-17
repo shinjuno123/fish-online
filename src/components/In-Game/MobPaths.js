@@ -1,4 +1,4 @@
-
+import paper from "paper";
 // start : x : 100, y : 0
 const path1 = [[
     { x: 100, y: 0 },
@@ -488,7 +488,7 @@ const path14 = [
     ]
 ];
 // [path1, path2, path3, path4, path5];
-const paths = [path13, path14];
+const paths = [path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11, path12, path13, path14];
 
 
 function moveMobInBezierCurve (points, ball) {
@@ -518,7 +518,47 @@ function moveMobInBezierCurve (points, ball) {
 }
 
 
+let prevPath = 0;
+
+function drawPath (path, currentPath) {
+    let testFish = { x: 100, y: 50, speed: 0.01, t: 0 };
+
+    path.forEach(function (points, index) {
+
+        points.forEach(function (point) {
+            const pointDot = new paper.Path.Circle([point.x, point.y], 3);
+            pointDot.fillColor = "black";
+            pointDot.selected = true;
+            const coordinate = new paper.PointText([point.x, point.y - 10]);
+            coordinate.content = `[${ point.x },${ point.y }]`;
+            coordinate.fillColor = "black";
+            coordinate.justification = "center";
+            coordinate.fontSize = 20;
+            coordinate.fontWeight = 5;
+        });
+
+        let currentPoints = points;
+        while (testFish.t < 1) {
+            let prevBall = Object.assign({}, testFish);
+
+            testFish = moveMobInBezierCurve(currentPoints, testFish);
+
+            if (prevPath !== currentPath) {
+                prevPath = currentPath;
+                prevBall = Object.assign({}, testFish);
+            }
+
+            const line = new paper.Path([prevBall.x, prevBall.y], [testFish.x, testFish.y]);
+            line.strokeWidth = 2;
+            line.strokeColor = "black";
+        }
+        prevPath = currentPath;
+        testFish.t = 0;
+    });
+
+}
 
 
 
-export { moveMobInBezierCurve, paths };
+
+export { moveMobInBezierCurve, paths, drawPath };

@@ -23,13 +23,13 @@ function Game () {
         paper.setup(canvas.current);
 
         // Call map
-        const { mapSize, obstacles, responsePoints, attackers, hiders } = testMap();
+        const { mapSize, obstacles, attackers, hiders } = testMap();
 
         // Call user character
         const starty = new Starty({ x: window.screen.availWidth, y: -window.screen.availHeight / 2 }, false, 70);
 
         // Game start
-        gameStart(mode, video, starty, mapSize, [], obstacles, responsePoints, attackers, hiders);
+        gameStart(mode, video, starty, mapSize, [], obstacles, attackers, hiders);
 
         paper.view.scale(0.5);
         paper.view.translate([-window.screen.availWidth / 2, window.screen.availHeight / 2 - 100]);

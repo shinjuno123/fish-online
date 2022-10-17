@@ -1,7 +1,7 @@
 import { Mob1 } from "./Mob";
 import paper from "paper";
 import { paths } from "./MobPaths";
-import { moveMobInBezierCurve } from "./MobPaths";
+import { moveMobInBezierCurve, drawPath } from "./MobPaths";
 
 
 // object's position depending on the relative position of fish
@@ -32,50 +32,7 @@ function getMatrix (x1, y1, x2, y2) {
 
 
 
-let prevPath = 0;
-
-function drawPath (path, color, currentPath) {
-    let testFish = { x: 1536, y: -724, speed: 0.01, t: 0 };
-
-    path.forEach(function (points, index) {
-
-        points.forEach(function (point) {
-            const pointDot = new paper.Path.Circle([point.x, point.y], 3);
-            pointDot.fillColor = "black";
-            pointDot.selected = true;
-            const coordinate = new paper.PointText([point.x, point.y - 10]);
-            coordinate.content = `[${ point.x },${ point.y }]`;
-            coordinate.fillColor = "black";
-            coordinate.justification = "center";
-            coordinate.fontSize = 20;
-            coordinate.fontWeight = 5;
-        });
-
-        let currentPoints = points;
-        while (testFish.t < 1) {
-            let prevBall = Object.assign({}, testFish);
-
-            testFish = moveMobInBezierCurve(currentPoints, testFish);
-
-            if (prevPath !== currentPath) {
-                prevPath = currentPath;
-                prevBall = Object.assign({}, testFish);
-            }
-
-            const line = new paper.Path([prevBall.x, prevBall.y], [testFish.x, testFish.y]);
-            line.strokeWidth = 2;
-            line.strokeColor = color;
-        }
-        prevPath = currentPath;
-        testFish.t = 0;
-    });
-
-}
-
-
-
-
-async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, responsePoints, attackers, hiders) {
+async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, attackers, hiders) {
 
 
     let isGameOver = false;
@@ -96,11 +53,10 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
     const { leftKnee, rightKnee } = (mode === "exercise") ? createMotion() : { leftKnee: null, rightKnee: null };
 
 
-    let colors = ["red", "blue", "yellow", "lightgreen", "black"];
     /*  Test Making path using Bezier curve*/
-    paths.forEach(function (path, index) {
-        drawPath(path, colors[index], index);
-    });
+    // paths.forEach(function (path, index) {
+    //     drawPath(path, index);
+    // });
 
 
     window.requestAnimationFrame((time) => {
@@ -166,8 +122,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
 
-
-
+    // for walk recognition by movenet
     worker.onmessage = (event) => {
         receievedKeyPoints = event.data;
         if (receievedKeyPoints) {
@@ -265,33 +220,31 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
     async function update (time, mobs) {
 
-        // if (prevTime + 10000 < time && mobs.length <= 100) {
-        //     prevTime = time;
-        //     console.log("created", mobs.length);
-
-        //     const mobsPoints = responsePoints.mobsResponsePoints;
-        //     const randomPlace = Math.floor(Math.random() * mobsPoints.length);
-        //     const mob = new Mob1({ x: mobsPoints[randomPlace][0], y: mobsPoints[randomPlace][1] }, true, 70, paper);
-        //     mob.selectedPath = randomPlace;
-        //     mobs.push(mob);
-        // }
+        // Create mobs every 5 sec and the limitation of number of mobs is 50
+        if (prevTime + 5000 < time && mobs.length <= 50) {
+            prevTime = time;
+            console.log("created", mobs.length);
+            const randomPlace = Math.floor(Math.random() * 12);
+            const mob = new Mob1({ x: paths[randomPlace][0][0].x, y: paths[randomPlace][0][0].y }, true, 70, paper);
+            mob.selectedPath = randomPlace;
+            mobs.push(mob);
+        }
 
 
         // Move mob fishes following the path made by bezier curves
         mobs = mobs.map(function (mob) {
-            if (mob.selectedPath < 2) {
-                const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t });
-                mob.t = mobMovedPosition.t;
-                mob.group.bounds.centerX = mobMovedPosition.x;
-                mob.group.bounds.centerY = mobMovedPosition.y;
 
-                if (mob.t > 1) {
-                    mob.t = 0;
-                    mob.currentPoint = paths[mob.selectedPath].length - 1 !== mob.currentPoint ? mob.currentPoint + 1 : 0;
-                    console.log(mob.currentPoint);
-                }
-                // console.log(mobMovedPosition);
+            const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t });
+            mob.t = mobMovedPosition.t;
+            mob.group.bounds.centerX = mobMovedPosition.x;
+            mob.group.bounds.centerY = mobMovedPosition.y;
+
+            if (mob.t > 1) {
+                mob.t = 0;
+                mob.currentPoint = paths[mob.selectedPath].length - 1 !== mob.currentPoint ? mob.currentPoint + 1 : 0;
+                console.log(mob.currentPoint);
             }
+
 
 
             return mob;
@@ -299,8 +252,8 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
 
-
-
+        // when control is by motion recognition
+        // send video image to worker
         if (mode === "exercise") {
             await videoUpdate(isExecuted);
             isExecuted = true;
@@ -351,6 +304,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
         // when contacting to obstacles, user's fish stops moving toward obstacles
+        // detect where the user fish bumped into the obstacles
         obstacles = obstacles.map(function (obstacle) {
             for (let pathItem of myCharacter.group.getItems()) {
                 const point = obstacle.group.getItem().getIntersections(pathItem)[0];
@@ -384,8 +338,14 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
         });
 
-
-
+        // If x or y has been changed by bumping into objects
+        // then makes the user's velocity to zero
+        if (isXChanged) {
+            userState.velX = 0;
+        }
+        if (isYChanged) {
+            userState.velY = 0;
+        }
 
 
 
@@ -398,16 +358,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
 
-        if (isXChanged) {
-            userState.velX = 0;
-        }
-        if (isYChanged) {
-            userState.velY = 0;
-        }
-
-
         /* Motion Recognitio Section */
-
         if (mode === "exercise") {
             // Fix motion frame position to right bottom
             motionFrame.bounds.x = 1600 - paper.view.matrix.tx;
@@ -464,8 +415,8 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
         // when meeding hiders, for example seaweed where can hide fishes including your fish
+        // make mob or user can hide into seaweed
         hiders = hiders.map(function (hider) {
-            // console.log(myCharacter.group);
             if (hider.group.bounds.contains(myCharacter.group.bounds)) {
                 hideTime = time + 0.001;
             }
@@ -479,7 +430,9 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
             return hider;
         });
 
-        // if user fish just hid
+        // if user fish hidden duration has just passed
+        // then user fish should be visible
+        // else user fish sohould be invisible
         if (hideTime < time) {
             myCharacter.group.visible = true;
         } else {
@@ -487,7 +440,9 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
         }
 
 
-        // if mob fish just hid
+        // if mob fish's hidden duration has just passed
+        // then mob fish should be visible
+        // else user fish should be invisible
         mobs = mobs.map(function (mob) {
             if (mob.hideTime < time) {
                 mob.group.visible = true;
@@ -500,6 +455,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
         // when user fish meets attacters like sea anemone, their size is decreased
+        // then make user fish smaller and bounced away from sea anemone
         attackers.map(function (attacker) {
             if (attacker.group.contains(myCharacter.group.bounds) || attacker.group.intersects(myCharacter.group.bounds)) {
                 myCharacter.size -= 0.1;
@@ -518,6 +474,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, re
 
 
         // Check if it is game over or not
+        // if game over is true then stop game and lose game
         if (isGameOver) {
             window.cancelAnimationFrame((time) => { update(time, mobs); });
         } else {

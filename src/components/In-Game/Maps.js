@@ -27,11 +27,6 @@ function testMap () {
     obstacles.push(new SideStone(mapSize[0] * 0.75, -mapSize[1] / 4, 180, false, mapSize, paper));
 
 
-    // Response place setup
-    const userResponsePoints = [93.75, 63.3];
-    const mobsResponsePoints = [[100, 0], [mapSize[0] - 100, 0], [mapSize[0] / 2, mapSize[1] / 2 - 100], [mapSize[0] / 2, -mapSize[1] / 2 + 100]];
-
-    const responsePoints = { userResponsePoints: userResponsePoints, mobsResponsePoints: mobsResponsePoints };
 
 
 
@@ -69,7 +64,7 @@ function testMap () {
     hiders.push(new Seaweed(300, -560, 1.2, 170));
     hiders.push(new Seaweed(660, -660, 1.2, 140));
 
-    return { mapSize: mapSize, obstacles: obstacles, responsePoints: responsePoints, attackers: attackers, hiders: hiders };
+    return { mapSize: mapSize, obstacles: obstacles, attackers: attackers, hiders: hiders };
 }
 
 
