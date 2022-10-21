@@ -1,11 +1,11 @@
 import { Mob1 } from "./Mob";
 import paper from "paper";
 import { paths } from "./MobPaths";
-import { moveMobInBezierCurve, drawPath } from "./MobPaths";
+import { moveMobInBezierCurve, getMovementAngle, drawPath } from "./MobPaths";
 
 
 // object's position depending on the relative position of fish
-const userState = { isObstacle: false, velX: 0, velY: 0, speed: 5, friction: 0.98, keys: {} };
+const userState = { isObstacle: false, velX: 0, velY: 0, speed: 6, friction: 0.98, keys: {} };
 
 
 function startyMovementHandler (event) {
@@ -221,7 +221,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
     async function update (time, mobs) {
 
         // Create mobs every 5 sec and the limitation of number of mobs is 50
-        if (prevTime + 5000 < time && mobs.length <= 50) {
+        if (prevTime + 5000 < time && mobs.length < 50) {
             prevTime = time;
             console.log("created", mobs.length);
             const randomPlace = Math.floor(Math.random() * 12);
@@ -233,16 +233,25 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
 
         // Move mob fishes following the path made by bezier curves
         mobs = mobs.map(function (mob) {
-
-            const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t });
+            const prevMobPosition = { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t };
+            const prevX = prevMobPosition.x;
+            const prevY = prevMobPosition.y;
+            const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], prevMobPosition);
             mob.t = mobMovedPosition.t;
             mob.group.bounds.centerX = mobMovedPosition.x;
             mob.group.bounds.centerY = mobMovedPosition.y;
 
+            // Get movement angle of mob fish and turn the mob's head toward the angle
+            const mobMovementAngle = getMovementAngle(prevX, prevY, mobMovedPosition.x, mobMovedPosition.y);
+            if ((mobMovementAngle <= 90 && mobMovementAngle >= 0) || (mobMovementAngle >= -90 && mobMovementAngle <= 0)) {
+                mob.setReverse(true);
+            } else if ((mobMovementAngle > 90 && mobMovementAngle) <= 180 || (mobMovementAngle < -90 && mobMovementAngle >= -180)) {
+                mob.setReverse(false);
+            }
+
             if (mob.t > 1) {
                 mob.t = 0;
                 mob.currentPoint = paths[mob.selectedPath].length - 1 !== mob.currentPoint ? mob.currentPoint + 1 : 0;
-                console.log(mob.currentPoint);
             }
 
 

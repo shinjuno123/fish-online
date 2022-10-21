@@ -517,6 +517,9 @@ function moveMobInBezierCurve (points, ball) {
 
 }
 
+function getMovementAngle (x1, y1, x2, y2) {
+    return Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+}
 
 let prevPath = 0;
 
@@ -561,4 +564,4 @@ function drawPath (path, currentPath) {
 
 
 
-export { moveMobInBezierCurve, paths, drawPath };
+export { moveMobInBezierCurve, paths, drawPath, getMovementAngle };
