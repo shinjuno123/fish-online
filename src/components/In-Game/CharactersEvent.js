@@ -2,6 +2,7 @@ import { Mob1 } from "./Mob";
 import paper from "paper";
 import { paths } from "./MobPaths";
 import { moveMobInBezierCurve, getMovementAngle, drawPath } from "./MobPaths";
+import controlMobSize from "./ControlMobSize";
 
 
 // object's position depending on the relative position of fish
@@ -126,7 +127,6 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
     worker.onmessage = (event) => {
         receievedKeyPoints = event.data;
         if (receievedKeyPoints) {
-            // keyboard == false
 
             leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
             leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 20;
@@ -220,12 +220,16 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
 
     async function update (time, mobs) {
 
+        // Control mob size as time goes
+        // console.log(time);
+        const { minMobSize, maxMobSize } = controlMobSize(time / 1000);
+
         // Create mobs every 5 sec and the limitation of number of mobs is 50
         if (prevTime + 5000 < time && mobs.length < 50) {
             prevTime = time;
             console.log("created", mobs.length);
             const randomPlace = Math.floor(Math.random() * 12);
-            const mob = new Mob1({ x: paths[randomPlace][0][0].x, y: paths[randomPlace][0][0].y }, true, 70, paper);
+            const mob = new Mob1({ x: paths[randomPlace][0][0].x, y: paths[randomPlace][0][0].y }, true, 70);
             mob.selectedPath = randomPlace;
             mobs.push(mob);
         }
