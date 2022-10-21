@@ -6,7 +6,7 @@ import controlMobSize from "./ControlMobSize";
 
 
 // object's position depending on the relative position of fish
-const userState = { isObstacle: false, velX: 0, velY: 0, speed: 6, friction: 0.98, keys: {} };
+const userState = { isObstacle: false, velX: 0, velY: 0, speed: 7, friction: 0.98, keys: {} };
 
 
 function startyMovementHandler (event) {
@@ -225,13 +225,26 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         const { minMobSize, maxMobSize } = controlMobSize(time / 1000);
 
         // Create mobs every 5 sec and the limitation of number of mobs is 50
-        if (prevTime + 5000 < time && mobs.length < 50) {
+        if (prevTime + 1000 < time && mobs.length < 60) {
             prevTime = time;
             console.log("created", mobs.length);
             const randomPlace = Math.floor(Math.random() * 12);
-            const mob = new Mob1({ x: paths[randomPlace][0][0].x, y: paths[randomPlace][0][0].y }, true, 70);
+            const randomSize = Math.floor(Math.random() * (maxMobSize - minMobSize)) + minMobSize;
+            // console.log(randomSize);
+            const mob = new Mob1({ x: paths[randomPlace][0][0].x, y: paths[randomPlace][0][0].y }, true, randomSize);
             mob.selectedPath = randomPlace;
             mobs.push(mob);
+        }
+        if (mobs.length % 5 === 0) {
+            mobs = mobs.map(function (mob, index) {
+                if (index < 1) {
+                    console.log(mob.group);
+                    // mob.group.remove();
+                    return;
+                }
+
+                return mob;
+            });
         }
 
 
