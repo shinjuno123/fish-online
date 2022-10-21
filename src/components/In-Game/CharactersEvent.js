@@ -235,11 +235,11 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             mob.selectedPath = randomPlace;
             mobs.push(mob);
         }
-        if (mobs.length % 5 === 0) {
-            mobs = mobs.map(function (mob, index) {
-                if (index < 1) {
-                    console.log(mob.group);
-                    // mob.group.remove();
+        if (mobs.length % 20 === 0) {
+            mobs = mobs.filter(function (mob, index) {
+                if (index < 5) {
+                    // console.log(mob.group);
+                    mob.group.remove();
                     return;
                 }
 
