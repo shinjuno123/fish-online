@@ -51,9 +51,10 @@ function Starty (center, isReverse = false, size) {
         this.group.position.y = point.y;
     };
 
-    this.setSize = function (width, height) {
-        this.group.bounds.width = width;
-        this.group.bounds.height = height;
+    this.setSize = function (size) {
+        this.group.bounds.width = this.ratio.width * size;
+        this.group.bounds.height = this.ratio.height * size;
+        this.size = size;
     };
 
     this.getSize = function () {

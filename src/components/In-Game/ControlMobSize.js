@@ -1,32 +1,36 @@
 function controlMobSize (second) {
     let minMobSize, maxMobSize;
-    if (0 < second && second <= 60) {
-        minMobSize = 70;
+
+    if (0 < second && second <= 15) {
+        minMobSize = 50;
         maxMobSize = 80;
-    } else if (60 < second && second <= 120) {
+    } else if (15 < second && second <= 30) {
         minMobSize = 80;
-        maxMobSize = 100;
-    } else if (120 < second && second <= 180) {
+        maxMobSize = 110;
+    } else if (30 < second && second <= 45) {
         minMobSize = 100;
-        maxMobSize = 120;
-    } else if (180 < second && second <= 240) {
-        minMobSize = 120;
-        maxMobSize = 130;
-    } else if (240 < second && second <= 300) {
-        minMobSize = 130;
         maxMobSize = 140;
-    } else if (300 < second && second <= 360) {
-        minMobSize = 140;
-        maxMobSize = 150;
-    } else if (360 < second && second <= 420) {
-        minMobSize = 150;
+    } else if (45 < second && second <= 60) {
+        minMobSize = 100;
         maxMobSize = 160;
-    } else if (420 < second && second <= 480) {
-        minMobSize = 170;
+    } else if (60 < second && second <= 75) {
+        minMobSize = 130;
         maxMobSize = 180;
-    } else if (540 < second) {
-        minMobSize = 190;
+    } else if (75 < second && second <= 90) {
+        minMobSize = 130;
         maxMobSize = 200;
+    } else if (90 < second && second <= 105) {
+        minMobSize = 130;
+        maxMobSize = 220;
+    } else if (105 < second && second <= 120) {
+        minMobSize = 150;
+        maxMobSize = 250;
+    } else if (120 < second && second <= 135) {
+        minMobSize = 180;
+        maxMobSize = 230;
+    } else if (135 < second && second <= 135) {
+        minMobSize = 230;
+        maxMobSize = 300;
     }
 
 

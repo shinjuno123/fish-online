@@ -225,20 +225,18 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         const { minMobSize, maxMobSize } = controlMobSize(time / 1000);
 
         // Create mobs every 5 sec and the limitation of number of mobs is 50
-        if (prevTime + 1000 < time && mobs.length < 60) {
+        if (prevTime + 500 < time && mobs.length < 60) {
             prevTime = time;
             console.log("created", mobs.length);
             const randomPlace = Math.floor(Math.random() * 12);
             const randomSize = Math.floor(Math.random() * (maxMobSize - minMobSize)) + minMobSize;
-            // console.log(randomSize);
             const mob = new Mob1({ x: paths[randomPlace][0][0].x, y: paths[randomPlace][0][0].y }, true, randomSize);
             mob.selectedPath = randomPlace;
             mobs.push(mob);
         }
-        if (mobs.length % 20 === 0) {
+        if (mobs.length === 50) {
             mobs = mobs.filter(function (mob, index) {
-                if (index < 5) {
-                    // console.log(mob.group);
+                if (index < 15) {
                     mob.group.remove();
                     return;
                 }
@@ -250,7 +248,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
 
         // Move mob fishes following the path made by bezier curves
         mobs = mobs.map(function (mob) {
-            const prevMobPosition = { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.01, t: mob.t };
+            const prevMobPosition = { x: mob.group.bounds.centerX, y: mob.group.bounds.centerY, speed: 0.003, t: mob.t };
             const prevX = prevMobPosition.x;
             const prevY = prevMobPosition.y;
             const mobMovedPosition = moveMobInBezierCurve(paths[mob.selectedPath][mob.currentPoint], prevMobPosition);
@@ -413,17 +411,17 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             const isIntersects = myCharacter.group.intersects(mob.group);
             if (isIntersects) {
                 if (mob.size <= myCharacter.size) {
-                    console.log("You can eat!");
+                    console.log("You can eat!",myCharacter.size,mob.size);
                     if (myCharacter.size <= 70) {
-                        myCharacter.size += mob.size * 0.05;
+                        myCharacter.setSize(myCharacter.size + mob.size * 0.05);
                     } else if (70 < myCharacter.size && myCharacter.size <= 100) {
-                        myCharacter.size += mob.size * 0.03;
+                        myCharacter.setSize(myCharacter.size + mob.size * 0.02);
                     } else if (100 < myCharacter.size && myCharacter.size <= 130) {
-                        myCharacter.size += mob.size * 0.02;
+                        myCharacter.setSize(myCharacter.size + mob.size * 0.01);
                     } else if (130 < myCharacter.size && myCharacter.size <= 170) {
-                        myCharacter.size += mob.size * 0.015;
+                        myCharacter.setSize(myCharacter.size + mob.size * 0.005);
                     } else if (170 < myCharacter.size && myCharacter.size) {
-                        myCharacter.size += mob.size * 0.005;
+                        myCharacter.setSize(myCharacter.size + mob.size * 0.002);
                     }
                     mob.group.remove();
                     return;
@@ -484,7 +482,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         // then make user fish smaller and bounced away from sea anemone
         attackers.map(function (attacker) {
             if (attacker.group.contains(myCharacter.group.bounds) || attacker.group.intersects(myCharacter.group.bounds)) {
-                myCharacter.size -= 0.1;
+                myCharacter.setSize(myCharacter.size - 1);
                 userState.velX = userState.velX < userState.speed ? -userState.velX * 1.1 : -userState.velX * 0.9;
                 userState.velY = userState.velY < userState.speed ? -userState.velY * 1.1 : -userState.velY * 0.9;
             }

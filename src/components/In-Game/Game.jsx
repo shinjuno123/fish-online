@@ -26,7 +26,7 @@ function Game () {
         const { mapSize, obstacles, attackers, hiders } = testMap();
 
         // Call user character
-        const starty = new Starty({ x: window.screen.availWidth, y: -window.screen.availHeight / 2 }, false, 70);
+        const starty = new Starty({ x: window.screen.availWidth, y: -window.screen.availHeight / 2 }, false, 80);
 
         // Game start
         gameStart(mode, video, starty, mapSize, [], obstacles, attackers, hiders);
