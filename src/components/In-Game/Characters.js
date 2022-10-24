@@ -62,7 +62,7 @@ function Starty (center, isReverse = false, size) {
     };
 
     this.getSize = function () {
-        return this.group.bounds;
+        return this.size;
     };
 
     this.setReverse = function (isReverse) {

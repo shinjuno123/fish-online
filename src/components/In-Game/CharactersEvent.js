@@ -86,18 +86,44 @@ function showGameOver(timer){
     gameOverPhrase.bounds.center.y = timer.bounds.topLeft.y-10 + ((window.screen.availHeight + 40) / 2);
 }
 
+
+function showGameWin(timer){
+    const transparentBackground = new paper.Path.Rectangle([timer.bounds.topLeft.x - 20,timer.bounds.topLeft.y-10],[window.screen.availWidth,window.screen.availHeight + 40]);
+    transparentBackground.fillColor = "black";    
+    transparentBackground.opacity = 0.4;
+
+    const gameOverPhrase = new paper.PointText();
+    gameOverPhrase.fontSize = 150;
+    gameOverPhrase.content = "G a m e  W i n !";
+    gameOverPhrase.fontWeight = "bold";
+    gameOverPhrase.strokeWidth = 4;
+    gameOverPhrase.strokeColor = "yellow"
+    gameOverPhrase.fillColor = "green";
+    gameOverPhrase.fontFamily = "'Dangrek', cursive";
+    gameOverPhrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.screen.availWidth / 2);
+    gameOverPhrase.bounds.center.y = timer.bounds.topLeft.y-10 + ((window.screen.availHeight + 40) / 2);
+}
+
 function isGameOver(gameOver, timer, myCharacter){
     if(timer.content === "0"){
         showGameOver(timer);
         return !gameOver;
     }
 
-    if(myCharacter.size < 50){
+    if(myCharacter.getSize() < 50){
         showGameOver(timer);
         return !gameOver;
     }
 
     return gameOver
+}
+
+function isGameWin(gameWin,timer,myCharacter){
+    if(myCharacter.getSize() >= 300 && timer.content !== "0"){
+        showGameWin(timer);
+        return !gameWin;
+    }
+    return gameWin;
 }
 
 
@@ -106,6 +132,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
 
 
     let gameOver = false;
+    let gameWin = false;
     let hideTime = 0;
     let prevTime = -10001;
     const worker = new Worker(process.env.PUBLIC_URL + '/worker.js');
@@ -454,6 +481,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         timer = updateAndFixTimer(timer,time,tx,ty);
         
         gameOver = isGameOver(gameOver,timer,myCharacter);
+        gameWin = isGameWin(gameWin,timer,myCharacter);
 
 
 
@@ -489,13 +517,13 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
                     console.log("You can eat!",myCharacter.size,mob.size);
                     if (myCharacter.size <= 70) {
                         myCharacter.setSize(myCharacter.size + mob.size * 0.05);
-                    } else if (70 < myCharacter.size && myCharacter.size <= 100) {
-                        myCharacter.setSize(myCharacter.size + mob.size * 0.02);
-                    } else if (100 < myCharacter.size && myCharacter.size <= 130) {
-                        myCharacter.setSize(myCharacter.size + mob.size * 0.01);
-                    } else if (130 < myCharacter.size && myCharacter.size <= 170) {
+                    } else if (70 < myCharacter.size && myCharacter.size <= 130) {
+                        myCharacter.setSize(myCharacter.size + mob.size * 0.04);
+                    } else if (130 < myCharacter.size && myCharacter.size <= 180) {
+                        myCharacter.setSize(myCharacter.size + mob.size * 0.03);
+                    } else if (180 < myCharacter.size && myCharacter.size <= 250) {
                         myCharacter.setSize(myCharacter.size + mob.size * 0.005);
-                    } else if (170 < myCharacter.size && myCharacter.size) {
+                    } else if (250 < myCharacter.size) {
                         myCharacter.setSize(myCharacter.size + mob.size * 0.002);
                     }
                     mob.group.remove();
@@ -592,7 +620,9 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         // if game over is true then stop game and lose game
         if (gameOver) {
             window.cancelAnimationFrame((time) => { update(time, mobs); });
-        } else {
+        }else if(gameWin){
+            window.cancelAnimationFrame((time) => { update(time, mobs); });
+        }else {
             window.requestAnimationFrame((time) => { update(time, mobs); });
         }
 
