@@ -28,7 +28,7 @@ function controlMobSize (second) {
     } else if (120 < second && second <= 135) {
         minMobSize = 180;
         maxMobSize = 230;
-    } else if (135 < second && second <= 135) {
+    } else if (135 < second) {
         minMobSize = 230;
         maxMobSize = 300;
     }

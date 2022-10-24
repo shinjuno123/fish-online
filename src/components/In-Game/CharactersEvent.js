@@ -7,7 +7,7 @@ import controlMobSize from "./ControlMobSize";
 
 // object's position depending on the relative position of fish
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 7, friction: 0.98, keys: {} };
-
+const limitedTime = 200;
 
 function startyMovementHandler (event) {
 
@@ -34,6 +34,38 @@ function getMatrix (x1, y1, x2, y2) {
 }
 
 
+function createTimer(){
+    const timer = new paper.PointText([20,80]);
+    timer.fontSize = 80;
+    timer.fillColor = "white";
+    return timer;
+}
+
+function updateAndFixTimer(timer, time, tx, ty){
+    // Get left time
+    const leftTime = limitedTime - Math.round(time / 1000);
+
+    // Set leftTime to timer
+    if(leftTime > 0){
+        timer.content = limitedTime - Math.round(time / 1000);
+    } else{
+        timer.content = 0;
+    }
+
+    // Change color of timer
+    if(leftTime < 60 && leftTime >= 30){
+        timer.fillColor = "orange";
+    } else if(leftTime < 30){
+        timer.fillColor = "red";
+    }
+
+    // Fix timer to top left side of the screen
+    timer.bounds.topLeft.x += tx;
+    timer.bounds.topLeft.y += ty;
+    return timer;
+}
+
+
 
 async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, attackers, hiders) {
 
@@ -54,7 +86,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
     let isReverse = false;
     const { motionFrame, down, straight, up, leftReverse, rightReverse } = (mode === "exercise") ? createMotionFrame() : { motionFrame: null, down: null, straight: null, up: null, leftReverse: null, rightReverse: null };
     const { leftKnee, rightKnee } = (mode === "exercise") ? createMotion() : { leftKnee: null, rightKnee: null };
-
+    let timer = createTimer();
 
     /*  Test Making path using Bezier curve*/
     // paths.forEach(function (path, index) {
@@ -384,6 +416,8 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         myCharacter.rx = myCharacter.group.bounds.center.x;
         myCharacter.ry = myCharacter.group.bounds.center.y;
         paper.view.translate([-tx, -ty]);
+        timer = updateAndFixTimer(timer,time,tx,ty);
+        
 
 
 
