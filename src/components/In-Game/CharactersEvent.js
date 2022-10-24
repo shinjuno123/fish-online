@@ -27,6 +27,8 @@ function startyMovementHandler (event) {
 }
 
 
+
+
 function getMatrix (x1, y1, x2, y2) {
     return { tx: x1 - x2, ty: y1 - y2 };
 }
@@ -234,10 +236,13 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             mob.selectedPath = randomPlace;
             mobs.push(mob);
         }
+
+
         if (mobs.length === 50) {
             mobs = mobs.filter(function (mob, index) {
                 if (index < 15) {
                     mob.group.remove();
+                    mob.removeSizeTag();
                     return;
                 }
 
@@ -424,10 +429,12 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
                         myCharacter.setSize(myCharacter.size + mob.size * 0.002);
                     }
                     mob.group.remove();
+                    mob.removeSizeTag();
                     return;
                 } else {
                     mob.size += myCharacter.size * 0.05;
                     myCharacter.group.remove();
+                    myCharacter.removeSizeTag();
                     isGameOver = true;
                     return mob;
                 }
@@ -448,6 +455,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             for (let mob of mobs) {
                 if (hider.group.bounds.contains(mob.group.bounds)) {
                     mob.hideTime = time + 0.001;
+                    
                 }
             }
 
@@ -470,8 +478,10 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         mobs = mobs.map(function (mob) {
             if (mob.hideTime < time) {
                 mob.group.visible = true;
+                mob.sizeTag.visible = true;
             } else {
                 mob.group.visible = false;
+                mob.sizeTag.visible = false;
             }
 
             return mob;
@@ -495,6 +505,16 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             userState.keys["ArrowLeft"] = false;
             userState.keys["ArrowRight"] = false;
         }
+
+
+        // Move sizetag to fishes position
+        // user
+        myCharacter.moveSizeTag();
+        // mob
+        mobs = mobs.map(function(mob){
+            mob.moveSizeTag();
+            return mob;
+        });
 
 
         // Check if it is game over or not

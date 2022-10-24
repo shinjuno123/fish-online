@@ -15,27 +15,31 @@ function Starty (center, isReverse = false, size) {
 
     this.constructor = function () {
         this.group = new paper.Group();
-        const startyBody = this._makeBody(this.isReverse);
-        const startyTail = this._makeTail(this.isReverse);
-        const startyFin = this._makeFin(this.isReverse);
-        const { startyEye, startyPupil } = this._makeEyeAndPupil(this.isReverse);
-        const startyMouth = this._makeMouth(this.isReverse);
-
-
+        const startyBody = this._makeBody();
+        const startyTail = this._makeTail();
+        const startyFin = this._makeFin();
+        const { startyEye, startyPupil } = this._makeEyeAndPupil();
+        const startyMouth = this._makeMouth();
+        this.sizeTag = this._makeSizeTag();
+        
+        
         this.group.addChild(startyBody);
         this.group.addChild(startyTail);
         this.group.addChild(startyFin);
         this.group.addChild(startyEye);
         this.group.addChild(startyPupil);
         this.group.addChild(startyMouth);
-        this._makeBodyFin(this.isReverse);
-        this._makeTailFin(this.isReverse);
+        this._makeBodyFin();
+        this._makeTailFin();
+
 
         this.group.bounds.width = this.ratio.width * this.size;
         this.group.bounds.height = this.ratio.height * this.size;
         this.group.position.x = center.x;
         this.group.position.y = center.y;
 
+
+    
         // Setup character movement handler
         document.body.addEventListener("keydown", (event) => startyMovementHandler(event));
         document.body.addEventListener('keyup', (event) => startyMovementHandler(event));
@@ -61,7 +65,7 @@ function Starty (center, isReverse = false, size) {
         return this.group.bounds;
     };
 
-    this.setReverse = function (isReverse = false) {
+    this.setReverse = function (isReverse) {
         // isReverse === true -> arrowRight, 
         if ((isReverse && !this.isReverse) || (!isReverse && this.isReverse)) {
             this.group.scale(-1, 1);
@@ -77,7 +81,7 @@ function Starty (center, isReverse = false, size) {
     };
 
 
-    this._makeBody = function (isReverse = false) {
+    this._makeBody = function () {
         const startyBody = new paper.Path([this.head.x, this.head.y], [this.head.x + 160, this.head.y + 10], [this.head.x + 160, this.head.y - 10], [this.head.x, this.head.y]);
         startyBody.curves[0].handle1.y = 45;
         startyBody.curves[0].handle2.y = 15;
@@ -94,7 +98,7 @@ function Starty (center, isReverse = false, size) {
     };
 
 
-    this._makeTail = function (isReverse = false) {
+    this._makeTail = function () {
 
         const startyTail = new paper.Path([this.head.x + 160, this.head.y - 10], [this.head.x + 200, this.head.y - 30], [this.head.x + 200, this.head.y + 30], [this.head.x + 160, this.head.y + 10]);
         startyTail.fillColor = "#D800A6";
@@ -108,7 +112,7 @@ function Starty (center, isReverse = false, size) {
 
     };
 
-    this._makeFin = function (isReverse = false) {
+    this._makeFin = function () {
 
         const startyFin = new paper.Path([this.head.x + 45, this.head.y - 26], [this.head.x + 70, this.head.y - 45], [this.head.x + 140, this.head.y - 20], [this.head.x + 45, this.head.y - 26]);
         startyFin.fillColor = "#D800A6";
@@ -123,7 +127,7 @@ function Starty (center, isReverse = false, size) {
 
     };
 
-    this._makeEyeAndPupil = function (isReverse = false) {
+    this._makeEyeAndPupil = function () {
 
         // Declare eye and pupil variables
         let startyEye, startyPupil;
@@ -147,7 +151,7 @@ function Starty (center, isReverse = false, size) {
         return { startyEye: startyEye, startyPupil: startyPupil };
     };
 
-    this._makeMouth = function (isReverse = false) {
+    this._makeMouth = function () {
         let startyMouth;
 
         startyMouth = new paper.Path([this.head.x + 3.5, this.head.y + 10], [this.head.x + 20, this.head.y + 10], [this.head.x + 12, this.head.y + 17], [this.head.x + 3.5, this.head.y + 10]);
@@ -163,7 +167,7 @@ function Starty (center, isReverse = false, size) {
         return startyMouth;
     };
 
-    this._makeBodyFin = function (isReverse = false) {
+    this._makeBodyFin = function () {
         const start = this.head.x + 55;
         const end = this.head.x + 150;
         const direction = 20;
@@ -181,8 +185,7 @@ function Starty (center, isReverse = false, size) {
     };
 
 
-    this._makeTailFin = function (isReverse = false) {
-        // isReverse = true;
+    this._makeTailFin = function () {
         const point1X = this.head.x + 170;
         const point2X = this.head.x + 190;
 
@@ -196,6 +199,26 @@ function Starty (center, isReverse = false, size) {
 
         }
     };
+
+    this._makeSizeTag = function(){
+        const sizeTag = new paper.PointText();
+        sizeTag.fillColor = "black";
+        sizeTag.fontSize = 18;
+        sizeTag.fontFamily = "'Dangrek', cursive";
+        sizeTag.content = size.toString();
+
+        return sizeTag;
+    }
+
+    this.moveSizeTag = function(){
+        this.sizeTag.bounds.center.x = this.group.bounds.topCenter.x;
+        this.sizeTag.bounds.center.y = this.group.bounds.topCenter.y - 15;
+        this.sizeTag.content = this.size.toFixed(2).toString();
+    }
+
+    this.removeSizeTag = function(){
+        this.sizeTag.remove();
+    }
 
     this.constructor();
 }

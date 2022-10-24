@@ -19,7 +19,7 @@ function Mob1 (center, reverse = true, size) {
         this.group = new paper.Group();
         const { bodyPattern1, bodyPattern2, bodyPattern3 } = this._makeBodypatterns();
         const { eye, pupil } = this._makeEyeAndPupil();
-
+        this.sizeTag = this._makeSizeTag();
 
         this.group.addChild(this._makeFin());
         this.group.addChild(this.makeBody());
@@ -150,6 +150,28 @@ function Mob1 (center, reverse = true, size) {
 
         return { eye, pupil };
     };
+
+    
+    this._makeSizeTag = function(){
+        const sizeTag = new paper.PointText();
+        sizeTag.fillColor = "black";
+        sizeTag.fontSize = 18;
+        sizeTag.fontFamily = "'Dangrek', cursive";
+        sizeTag.content = size.toString();
+
+        return sizeTag;
+    }
+
+
+    this.moveSizeTag = function(){
+        this.sizeTag.bounds.center.x = this.group.bounds.topCenter.x;
+        this.sizeTag.bounds.center.y = this.group.bounds.topCenter.y - 15;
+        this.sizeTag.content = this.size.toFixed(0).toString();
+    }
+
+    this.removeSizeTag = function(){
+        this.sizeTag.remove();
+    }
 
     this.constructor();
 }
