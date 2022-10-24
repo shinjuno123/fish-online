@@ -1,7 +1,7 @@
 import { Mob1 } from "./Mob";
 import paper from "paper";
 import { paths } from "./MobPaths";
-import { moveMobInBezierCurve, getMovementAngle, drawPath } from "./MobPaths";
+import { moveMobInBezierCurve, getMovementAngle } from "./MobPaths";
 import controlMobSize from "./ControlMobSize";
 
 
@@ -38,6 +38,7 @@ function createTimer(){
     const timer = new paper.PointText([20,80]);
     timer.fontSize = 80;
     timer.fillColor = "white";
+    timer.fontFamily = "'Dangrek', cursive";
     return timer;
 }
 
@@ -47,9 +48,9 @@ function updateAndFixTimer(timer, time, tx, ty){
 
     // Set leftTime to timer
     if(leftTime > 0){
-        timer.content = limitedTime - Math.round(time / 1000);
+        timer.content = (limitedTime - Math.round(time / 1000)).toString();
     } else{
-        timer.content = 0;
+        timer.content = "0";
     }
 
     // Change color of timer
@@ -62,7 +63,30 @@ function updateAndFixTimer(timer, time, tx, ty){
     // Fix timer to top left side of the screen
     timer.bounds.topLeft.x += tx;
     timer.bounds.topLeft.y += ty;
+
+    timer.bringToFront();
+
     return timer;
+}
+
+function showGameOver(timer){
+    const transparentBackground = new paper.Path.Rectangle([timer.bounds.topLeft.x - 20,timer.bounds.topLeft.y-10],[window.screen.availWidth,window.screen.availHeight + 40]);
+    transparentBackground.fillColor = "black";    
+    transparentBackground.opacity = 0.4;
+}
+
+function isGameOver(gameOver, timer, myCharacter){
+    if(timer.content === "0"){
+        showGameOver(timer);
+        return !gameOver;
+    }
+
+    if(myCharacter.size < 50){
+        showGameOver(timer);
+        return !gameOver;
+    }
+
+    return gameOver
 }
 
 
@@ -70,7 +94,7 @@ function updateAndFixTimer(timer, time, tx, ty){
 async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, attackers, hiders) {
 
 
-    let isGameOver = false;
+    let gameOver = false;
     let hideTime = 0;
     let prevTime = -10001;
     const worker = new Worker(process.env.PUBLIC_URL + '/worker.js');
@@ -418,10 +442,11 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         paper.view.translate([-tx, -ty]);
         timer = updateAndFixTimer(timer,time,tx,ty);
         
+        gameOver = isGameOver(gameOver,timer,myCharacter);
 
 
 
-        /* Motion Recognitio Section */
+        /* Motion Recognition Section */
         if (mode === "exercise") {
             // Fix motion frame position to right bottom
             motionFrame.bounds.x = 1600 - paper.view.matrix.tx;
@@ -469,7 +494,8 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
                     mob.size += myCharacter.size * 0.05;
                     myCharacter.group.remove();
                     myCharacter.removeSizeTag();
-                    isGameOver = true;
+                    gameOver = true;
+                    showGameOver(timer);
                     return mob;
                 }
             } else {
@@ -553,7 +579,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
 
         // Check if it is game over or not
         // if game over is true then stop game and lose game
-        if (isGameOver) {
+        if (gameOver) {
             window.cancelAnimationFrame((time) => { update(time, mobs); });
         } else {
             window.requestAnimationFrame((time) => { update(time, mobs); });
