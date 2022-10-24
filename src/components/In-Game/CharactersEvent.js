@@ -73,6 +73,17 @@ function showGameOver(timer){
     const transparentBackground = new paper.Path.Rectangle([timer.bounds.topLeft.x - 20,timer.bounds.topLeft.y-10],[window.screen.availWidth,window.screen.availHeight + 40]);
     transparentBackground.fillColor = "black";    
     transparentBackground.opacity = 0.4;
+
+    const gameOverPhrase = new paper.PointText();
+    gameOverPhrase.fontSize = 150;
+    gameOverPhrase.content = "G a m e  O v e r";
+    gameOverPhrase.fontWeight = "bold";
+    gameOverPhrase.strokeWidth = 4;
+    gameOverPhrase.strokeColor = "red"
+    gameOverPhrase.fillColor = "white";
+    gameOverPhrase.fontFamily = "'Dangrek', cursive";
+    gameOverPhrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.screen.availWidth / 2);
+    gameOverPhrase.bounds.center.y = timer.bounds.topLeft.y-10 + ((window.screen.availHeight + 40) / 2);
 }
 
 function isGameOver(gameOver, timer, myCharacter){
