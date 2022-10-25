@@ -11,6 +11,7 @@ function Game () {
     const cameraOptions = useRef(null);
     const mode = window.location.href.split('/').at(-1);
     const canvas = useRef(null);
+    const prevScreenSize = {width:0,height:0};
 
     function handleCameraSelection (event) {
         const selectedIndex = event.target.selectedIndex;
@@ -26,20 +27,38 @@ function Game () {
         const { mapSize, obstacles, attackers, hiders } = testMap();
 
         // Call user character
-        const starty = new Starty({ x: window.screen.availWidth / 2, y: window.screen.availHeight / 2 }, false, 299);
+        const starty = new Starty({ x: window.screen.availWidth / 2, y: window.screen.availHeight / 2 }, false, 80);
 
         // Game start
         gameStart(mode, video, starty, mapSize, [], obstacles, attackers, hiders);
 
+        // Initialize view position 
+        paper.view.translate([-(window.screen.availWidth - window.innerWidth)/2,-(window.screen.availHeight - window.innerHeight)/2]);
+
+        prevScreenSize.width = window.innerWidth;
+        prevScreenSize.height = window.innerHeight;
     }
 
+    function handleResize(){
+        const resizedWidth = prevScreenSize.width - window.innerWidth;
+        const resizedHeight =prevScreenSize.height - window.innerHeight;
 
+        paper.view.translate([-resizedWidth / 2,-resizedHeight / 2]);
+       
+        prevScreenSize.width = window.innerWidth;
+        prevScreenSize.height = window.innerHeight;
+
+
+    }
 
     useEffect(() => {
         if (mode === "exercise") {
             videoSetting(video, cameraOptions, 0);
         }
         canvasSetup();
+
+
+        window.addEventListener("resize",()=>handleResize())
     });
 
     return (

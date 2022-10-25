@@ -8,8 +8,9 @@ import controlMobSize from "./ControlMobSize";
 // object's position depending on the relative position of fish
 const userState = { isObstacle: false, velX: 0, velY: 0, speed: 7, friction: 0.98, keys: {} };
 const limitedTime = 200;
+const screenSize = { width: window.innerWidth, height: window.innerHeight };
 
-function startyMovementHandler (event) {
+function startyMovementHandler(event) {
 
     event.preventDefault();
 
@@ -29,34 +30,34 @@ function startyMovementHandler (event) {
 
 
 
-function getMatrix (x1, y1, x2, y2) {
+function getMatrix(x1, y1, x2, y2) {
     return { tx: x1 - x2, ty: y1 - y2 };
 }
 
 
-function createTimer(){
-    const timer = new paper.PointText([20,80]);
+function createTimer() {
+    const timer = new paper.PointText([(window.screen.availWidth - window.innerWidth) / 2 + 20, (window.screen.availHeight - window.innerHeight) / 2 + 80]);
     timer.fontSize = 80;
     timer.fillColor = "white";
     timer.fontFamily = "'Dangrek', cursive";
     return timer;
 }
 
-function updateAndFixTimer(timer, time, tx, ty){
+function updateAndFixTimer(timer, time, tx, ty) {
     // Get left time
     const leftTime = limitedTime - Math.round(time / 1000);
 
     // Set leftTime to timer
-    if(leftTime > 0){
+    if (leftTime > 0) {
         timer.content = (limitedTime - Math.round(time / 1000)).toString();
-    } else{
+    } else {
         timer.content = "0";
     }
 
     // Change color of timer
-    if(leftTime < 60 && leftTime >= 30){
+    if (leftTime < 60 && leftTime >= 30) {
         timer.fillColor = "orange";
-    } else if(leftTime < 30){
+    } else if (leftTime < 30) {
         timer.fillColor = "red";
     }
 
@@ -69,9 +70,19 @@ function updateAndFixTimer(timer, time, tx, ty){
     return timer;
 }
 
-function showGameOver(timer){
-    const transparentBackground = new paper.Path.Rectangle([timer.bounds.topLeft.x - 20,timer.bounds.topLeft.y-10],[window.screen.availWidth,window.screen.availHeight + 40]);
-    transparentBackground.fillColor = "black";    
+function screenResized() {
+    const resizedWidth = window.innerWidth - screenSize.width;
+    const resizedHeight = window.innerHeight - screenSize.height;
+
+    screenSize.width = window.innerWidth;
+    screenSize.height = window.innerHeight;
+
+    return { resizedHeight, resizedWidth }
+}
+
+function showGameOver(timer) {
+    const transparentBackground = new paper.Path.Rectangle([timer.bounds.topLeft.x - 20, timer.bounds.topLeft.y - 10], [window.screen.availWidth, window.screen.availHeight + 40]);
+    transparentBackground.fillColor = "black";
     transparentBackground.opacity = 0.4;
 
     const gameOverPhrase = new paper.PointText();
@@ -83,52 +94,57 @@ function showGameOver(timer){
     gameOverPhrase.fillColor = "white";
     gameOverPhrase.fontFamily = "'Dangrek', cursive";
     gameOverPhrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.screen.availWidth / 2);
-    gameOverPhrase.bounds.center.y = timer.bounds.topLeft.y-10 + ((window.screen.availHeight + 40) / 2);
+    gameOverPhrase.bounds.center.y = timer.bounds.topLeft.y - 10 + ((window.screen.availHeight + 40) / 2);
+
+    return {loseTransparentBackground:transparentBackground,gameOverPhrase};
+
 }
 
 
-function showGameWin(timer){
-    const transparentBackground = new paper.Path.Rectangle([timer.bounds.topLeft.x - 20,timer.bounds.topLeft.y-10],[window.screen.availWidth,window.screen.availHeight + 40]);
-    transparentBackground.fillColor = "black";    
+function showGameWin(timer) {
+    const transparentBackground = new paper.Path.Rectangle([timer.bounds.topLeft.x - 20, timer.bounds.topLeft.y - 10], [window.screen.availWidth, window.screen.availHeight + 40]);
+    transparentBackground.fillColor = "black";
     transparentBackground.opacity = 0.4;
 
-    const gameOverPhrase = new paper.PointText();
-    gameOverPhrase.fontSize = 150;
-    gameOverPhrase.content = "G a m e  W i n !";
-    gameOverPhrase.fontWeight = "bold";
-    gameOverPhrase.strokeWidth = 4;
-    gameOverPhrase.strokeColor = "yellow"
-    gameOverPhrase.fillColor = "green";
-    gameOverPhrase.fontFamily = "'Dangrek', cursive";
-    gameOverPhrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.screen.availWidth / 2);
-    gameOverPhrase.bounds.center.y = timer.bounds.topLeft.y-10 + ((window.screen.availHeight + 40) / 2);
+    const gameWinPhrase = new paper.PointText();
+    gameWinPhrase.fontSize = 150;
+    gameWinPhrase.content = "G a m e  W i n !";
+    gameWinPhrase.fontWeight = "bold";
+    gameWinPhrase.strokeWidth = 4;
+    gameWinPhrase.strokeColor = "yellow"
+    gameWinPhrase.fillColor = "green";
+    gameWinPhrase.fontFamily = "'Dangrek', cursive";
+    gameWinPhrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.screen.availWidth / 2);
+    gameWinPhrase.bounds.center.y = timer.bounds.topLeft.y - 10 + ((window.screen.availHeight + 40) / 2);
+
+    return {winTransparentBackground:transparentBackground,gameWinPhrase};
 }
 
-function isGameOver(gameOver, timer, myCharacter){
-    if(timer.content === "0"){
-        showGameOver(timer);
-        return !gameOver;
+function isGameOver(gameOver, timer, myCharacter) {
+    if (timer.content === "0") {
+        const {loseTransparentBackground,gameOverPhrase} = showGameOver(timer);
+        return {gameOverState:!gameOver,loseTransparentBackground,gameOverPhrase};
     }
 
-    if(myCharacter.getSize() < 50){
-        showGameOver(timer);
-        return !gameOver;
+    if (myCharacter.getSize() < 50) {
+        const {loseTransparentBackground,gameOverPhrase} = showGameOver(timer);
+        return {gameOverState:!gameOver,loseTransparentBackground,gameOverPhrase};
     }
 
-    return gameOver
+    return {gameOverState:gameOver,loseTransparentBackground:undefined,gameOverPhrase:undefined};
 }
 
-function isGameWin(gameWin,timer,myCharacter){
-    if(myCharacter.getSize() >= 300 && timer.content !== "0"){
-        showGameWin(timer);
-        return !gameWin;
+function isGameWin(gameWin, timer, myCharacter) {
+    if (myCharacter.getSize() >= 300 && timer.content !== "0") {
+        const {winTransparentBackground,gameWinPhrase} = showGameWin(timer);
+        return {gameWinState:!gameWin,winTransparentBackground,gameWinPhrase};
     }
-    return gameWin;
+    return {gameWinState:gameWin,winTransparentBackground:undefined,gameWinPhrase:undefined};
 }
 
 
 
-async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, attackers, hiders) {
+async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, attackers, hiders) {
 
 
     let gameOver = false;
@@ -161,7 +177,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
     });
 
 
-    async function videoUpdate (isExecuted) {
+    async function videoUpdate(isExecuted) {
         const ctx = tmpCanvas.getContext('2d');
         ctx.drawImage(video.current, 0, 0);
         const contents = {
@@ -174,7 +190,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
 
     }
 
-    function createMotionFrame () {
+    function createMotionFrame() {
         const motionFrame = new paper.Path.Rectangle(paper.view.bounds.width - imageSize.width, paper.view.bounds.height - imageSize.height, imageSize.width, imageSize.height);
         motionFrame.fillColor = "white";
         const size = [120, 80];
@@ -201,7 +217,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
     }
 
 
-    function createMotion () {
+    function createMotion() {
 
         const leftKnee = paper.Path.Circle([motionFrame.bounds.centerX, motionFrame.bounds.centerY], 3);
         leftKnee.selected = true;
@@ -305,7 +321,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             }
 
 
-            screen1.content = `saying : ${ movement } state : ${ state.left } ${ state.right } walk ${ countWalk }`;
+            screen1.content = `saying : ${movement} state : ${state.left} ${state.right} walk ${countWalk}`;
             screen1.fontSize = 40;
             screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
 
@@ -313,8 +329,46 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         }
     };
 
+    function updateTimerAndPhrasePosition(tx, ty,transparentBackground,phrase) {
+        const { resizedWidth, resizedHeight } = screenResized();
+        timer.bounds.topLeft.x += -resizedWidth / 2;
+        timer.bounds.topLeft.y += -resizedHeight / 2;
 
-    async function update (time, mobs) {
+        transparentBackground.bounds.topLeft.x = timer.bounds.topLeft.x - 20;
+        transparentBackground.bounds.topLeft.y = timer.bounds.topLeft.y - 10;
+
+        phrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.innerWidth / 2);
+        phrase.bounds.center.y = timer.bounds.topLeft.y - 10 + ((window.innerHeight + 40) / 2);
+
+        window.requestAnimationFrame(()=>updateTimerAndPhrasePosition(tx,ty,transparentBackground,phrase));
+    }
+
+
+    async function update(time, mobs) {
+        // move screen when user fish gets a border of virtual Rectangle
+        const { tx, ty } = getMatrix(myCharacter.group.bounds.center.x, myCharacter.group.bounds.center.y, myCharacter.rx, myCharacter.ry);
+        myCharacter.rx = myCharacter.group.bounds.center.x;
+        myCharacter.ry = myCharacter.group.bounds.center.y;
+        paper.view.translate([-tx, -ty]);
+
+        timer = updateAndFixTimer(timer, time, tx, ty);
+        const { resizedWidth, resizedHeight } = screenResized();
+        timer.bounds.topLeft.x += -resizedWidth / 2;
+        timer.bounds.topLeft.y += -resizedHeight / 2;
+
+        const {gameOverState,loseTransparentBackground,gameOverPhrase} = isGameOver(gameOver, timer, myCharacter);
+        gameOver = gameOverState;
+        const {gameWinState,winTransparentBackground,gameWinPhrase} = isGameWin(gameWin, timer, myCharacter);
+        gameWin = gameWinState;
+
+
+
+        if (gameOver) {
+            window.requestAnimationFrame(()=>updateTimerAndPhrasePosition(tx,ty,loseTransparentBackground,gameOverPhrase));
+        }
+        if(gameWin){
+            window.requestAnimationFrame(()=>updateTimerAndPhrasePosition(tx,ty,winTransparentBackground,gameWinPhrase));
+        }
 
         // Control mob size as time goes
         // console.log(time);
@@ -473,15 +527,6 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
 
 
 
-        // move screen when user fish gets a border of virtual Rectangle
-        const { tx, ty } = getMatrix(myCharacter.group.bounds.center.x, myCharacter.group.bounds.center.y, myCharacter.rx, myCharacter.ry);
-        myCharacter.rx = myCharacter.group.bounds.center.x;
-        myCharacter.ry = myCharacter.group.bounds.center.y;
-        paper.view.translate([-tx, -ty]);
-        timer = updateAndFixTimer(timer,time,tx,ty);
-        
-        gameOver = isGameOver(gameOver,timer,myCharacter);
-        gameWin = isGameWin(gameWin,timer,myCharacter);
 
 
 
@@ -514,7 +559,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             const isIntersects = myCharacter.group.intersects(mob.group);
             if (isIntersects) {
                 if (mob.size <= myCharacter.size) {
-                    console.log("You can eat!",myCharacter.size,mob.size);
+                    console.log("You can eat!", myCharacter.size, mob.size);
                     if (myCharacter.size <= 70) {
                         myCharacter.setSize(myCharacter.size + mob.size * 0.05);
                     } else if (70 < myCharacter.size && myCharacter.size <= 130) {
@@ -554,7 +599,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
             for (let mob of mobs) {
                 if (hider.group.bounds.contains(mob.group.bounds)) {
                     mob.hideTime = time + 0.001;
-                    
+
                 }
             }
 
@@ -610,7 +655,7 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         // user
         myCharacter.moveSizeTag();
         // mob
-        mobs = mobs.map(function(mob){
+        mobs = mobs.map(function (mob) {
             mob.moveSizeTag();
             return mob;
         });
@@ -620,9 +665,9 @@ async function gameStart (mode, video, myCharacter, mapSize, mobs, obstacles, at
         // if game over is true then stop game and lose game
         if (gameOver) {
             window.cancelAnimationFrame((time) => { update(time, mobs); });
-        }else if(gameWin){
+        } else if (gameWin) {
             window.cancelAnimationFrame((time) => { update(time, mobs); });
-        }else {
+        } else {
             window.requestAnimationFrame((time) => { update(time, mobs); });
         }
 
