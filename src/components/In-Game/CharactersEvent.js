@@ -96,7 +96,7 @@ function showGameOver(timer) {
     gameOverPhrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.screen.availWidth / 2);
     gameOverPhrase.bounds.center.y = timer.bounds.topLeft.y - 10 + ((window.screen.availHeight + 40) / 2);
 
-    return {loseTransparentBackground:transparentBackground,gameOverPhrase};
+    return { loseTransparentBackground: transparentBackground, gameOverPhrase };
 
 }
 
@@ -117,29 +117,34 @@ function showGameWin(timer) {
     gameWinPhrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.screen.availWidth / 2);
     gameWinPhrase.bounds.center.y = timer.bounds.topLeft.y - 10 + ((window.screen.availHeight + 40) / 2);
 
-    return {winTransparentBackground:transparentBackground,gameWinPhrase};
+    return { winTransparentBackground: transparentBackground, gameWinPhrase };
 }
 
 function isGameOver(gameOver, timer, myCharacter) {
     if (timer.content === "0") {
-        const {loseTransparentBackground,gameOverPhrase} = showGameOver(timer);
-        return {gameOverState:!gameOver,loseTransparentBackground,gameOverPhrase};
+        const { loseTransparentBackground, gameOverPhrase } = showGameOver(timer);
+        return { gameOverState: !gameOver, loseTransparentBackground, gameOverPhrase };
     }
 
     if (myCharacter.getSize() < 50) {
-        const {loseTransparentBackground,gameOverPhrase} = showGameOver(timer);
-        return {gameOverState:!gameOver,loseTransparentBackground,gameOverPhrase};
+        const { loseTransparentBackground, gameOverPhrase } = showGameOver(timer);
+        return { gameOverState: !gameOver, loseTransparentBackground, gameOverPhrase };
     }
 
-    return {gameOverState:gameOver,loseTransparentBackground:undefined,gameOverPhrase:undefined};
+    if(gameOver){
+        const { loseTransparentBackground, gameOverPhrase } = showGameOver(timer);
+        return { gameOverState: gameOver, loseTransparentBackground, gameOverPhrase };
+    }
+
+    return { gameOverState: gameOver, loseTransparentBackground: undefined, gameOverPhrase: undefined };
 }
 
 function isGameWin(gameWin, timer, myCharacter) {
     if (myCharacter.getSize() >= 300 && timer.content !== "0") {
-        const {winTransparentBackground,gameWinPhrase} = showGameWin(timer);
-        return {gameWinState:!gameWin,winTransparentBackground,gameWinPhrase};
+        const { winTransparentBackground, gameWinPhrase } = showGameWin(timer);
+        return { gameWinState: !gameWin, winTransparentBackground, gameWinPhrase };
     }
-    return {gameWinState:gameWin,winTransparentBackground:undefined,gameWinPhrase:undefined};
+    return { gameWinState: gameWin, winTransparentBackground: undefined, gameWinPhrase: undefined };
 }
 
 
@@ -329,7 +334,7 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
         }
     };
 
-    function updateTimerAndPhrasePosition(tx, ty,transparentBackground,phrase) {
+    function updateTimerAndPhrasePosition(tx, ty, transparentBackground, phrase) {
         const { resizedWidth, resizedHeight } = screenResized();
         timer.bounds.topLeft.x += -resizedWidth / 2;
         timer.bounds.topLeft.y += -resizedHeight / 2;
@@ -340,35 +345,12 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
         phrase.bounds.center.x = timer.bounds.topLeft.x - 20 + (window.innerWidth / 2);
         phrase.bounds.center.y = timer.bounds.topLeft.y - 10 + ((window.innerHeight + 40) / 2);
 
-        window.requestAnimationFrame(()=>updateTimerAndPhrasePosition(tx,ty,transparentBackground,phrase));
+
+        window.requestAnimationFrame(() => updateTimerAndPhrasePosition(tx, ty, transparentBackground, phrase));
     }
 
 
     async function update(time, mobs) {
-        // move screen when user fish gets a border of virtual Rectangle
-        const { tx, ty } = getMatrix(myCharacter.group.bounds.center.x, myCharacter.group.bounds.center.y, myCharacter.rx, myCharacter.ry);
-        myCharacter.rx = myCharacter.group.bounds.center.x;
-        myCharacter.ry = myCharacter.group.bounds.center.y;
-        paper.view.translate([-tx, -ty]);
-
-        timer = updateAndFixTimer(timer, time, tx, ty);
-        const { resizedWidth, resizedHeight } = screenResized();
-        timer.bounds.topLeft.x += -resizedWidth / 2;
-        timer.bounds.topLeft.y += -resizedHeight / 2;
-
-        const {gameOverState,loseTransparentBackground,gameOverPhrase} = isGameOver(gameOver, timer, myCharacter);
-        gameOver = gameOverState;
-        const {gameWinState,winTransparentBackground,gameWinPhrase} = isGameWin(gameWin, timer, myCharacter);
-        gameWin = gameWinState;
-
-
-
-        if (gameOver) {
-            window.requestAnimationFrame(()=>updateTimerAndPhrasePosition(tx,ty,loseTransparentBackground,gameOverPhrase));
-        }
-        if(gameWin){
-            window.requestAnimationFrame(()=>updateTimerAndPhrasePosition(tx,ty,winTransparentBackground,gameWinPhrase));
-        }
 
         // Control mob size as time goes
         // console.log(time);
@@ -579,7 +561,6 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
                     myCharacter.group.remove();
                     myCharacter.removeSizeTag();
                     gameOver = true;
-                    showGameOver(timer);
                     return mob;
                 }
             } else {
@@ -661,12 +642,32 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
         });
 
 
+
+        // move screen when user fish gets a border of virtual Rectangle
+        const { tx, ty } = getMatrix(myCharacter.group.bounds.center.x, myCharacter.group.bounds.center.y, myCharacter.rx, myCharacter.ry);
+        myCharacter.rx = myCharacter.group.bounds.center.x;
+        myCharacter.ry = myCharacter.group.bounds.center.y;
+        paper.view.translate([-tx, -ty]);
+
+        timer = updateAndFixTimer(timer, time, tx, ty);
+        const { resizedWidth, resizedHeight } = screenResized();
+        timer.bounds.topLeft.x += -resizedWidth / 2;
+        timer.bounds.topLeft.y += -resizedHeight / 2;
+
+        const { gameOverState, loseTransparentBackground, gameOverPhrase } = isGameOver(gameOver, timer, myCharacter);
+        gameOver = gameOverState;
+        const { gameWinState, winTransparentBackground, gameWinPhrase } = isGameWin(gameWin, timer, myCharacter);
+        gameWin = gameWinState;
+
+        console.log(loseTransparentBackground, gameOverPhrase);
         // Check if it is game over or not
         // if game over is true then stop game and lose game
         if (gameOver) {
             window.cancelAnimationFrame((time) => { update(time, mobs); });
+            window.requestAnimationFrame(() => updateTimerAndPhrasePosition(tx, ty, loseTransparentBackground, gameOverPhrase));
         } else if (gameWin) {
             window.cancelAnimationFrame((time) => { update(time, mobs); });
+            window.requestAnimationFrame(() => updateTimerAndPhrasePosition(tx, ty, winTransparentBackground, gameWinPhrase));
         } else {
             window.requestAnimationFrame((time) => { update(time, mobs); });
         }
