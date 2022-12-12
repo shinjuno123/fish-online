@@ -1,0 +1,46 @@
+html,
+body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Scale canvas with resize attribute to full size */
+
+.game #game-canvas{
+    height: 100%;
+    width: 100%;
+    background-color: #47B5FF;
+}
+
+
+.game #motion-canvas{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    width: 320px;
+    height: 240px;
+}
+
+
+
+video{
+    -webkit-transform: scaleX(-1);
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    transform: scaleX(-1);
+    /* display: none; */
+}
+
+
+select{
+    position: absolute;
+    bottom: 450px;
+    right: 20px;
+    z-index: 2;
+    display: none;
+}

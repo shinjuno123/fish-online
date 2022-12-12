@@ -156,7 +156,7 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
     let gameWin = false;
     let hideTime = 0;
     let prevTime = -10001;
-    const worker = new Worker(process.env.PUBLIC_URL + '/worker.js');
+    // const worker = new Worker(process.env.PUBLIC_URL + '/worker.js');
     const tmpCanvas = document.createElement("canvas");
     const imageSize = { width: 320, height: 240 };
     let receievedKeyPoints;
@@ -182,18 +182,18 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
     });
 
 
-    async function videoUpdate(isExecuted) {
-        const ctx = tmpCanvas.getContext('2d');
-        ctx.drawImage(video.current, 0, 0);
-        const contents = {
-            image: ctx.getImageData(0, 0, imageSize.width, imageSize.height),
-            isExecuted: isExecuted,
-        };
+    // async function videoUpdate(isExecuted) {
+    //     const ctx = tmpCanvas.getContext('2d');
+    //     ctx.drawImage(video.current, 0, 0);
+    //     const contents = {
+    //         image: ctx.getImageData(0, 0, imageSize.width, imageSize.height),
+    //         isExecuted: isExecuted,
+    //     };
 
 
-        worker.postMessage(contents);
+    //     worker.postMessage(contents);
 
-    }
+    // }
 
     function createMotionFrame() {
         const motionFrame = new paper.Path.Rectangle(paper.view.bounds.width - imageSize.width, paper.view.bounds.height - imageSize.height, imageSize.width, imageSize.height);
@@ -241,98 +241,98 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
 
 
     // for walk recognition by movenet
-    worker.onmessage = (event) => {
-        receievedKeyPoints = event.data;
-        if (receievedKeyPoints) {
+    // worker.onmessage = (event) => {
+    //     receievedKeyPoints = event.data;
+    //     if (receievedKeyPoints) {
 
-            leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
-            leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 20;
+    //         leftKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[13].x);
+    //         leftKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[13].y + 20;
 
-            rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
-            rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 20;
-
-
-            if (firstPosition === 0) {
-                firstPosition = leftKnee.bounds.centerY;
-            }
-
-            if (up.intersects(leftKnee) || up.contains(leftKnee) || up.isInside(leftKnee)) {
-                movement = "up";
-                state.left = true;
-            }
-            if (straight.intersects(leftKnee) || straight.contains(leftKnee) || straight.isInside(leftKnee)) {
-                movement = "straight";
-                state.left = true;
-            }
-            if (down.intersects(leftKnee) || down.contains(leftKnee) || down.isInside(leftKnee)) {
-                movement = "down";
-                state.left = true;
-            }
-
-            if (up.intersects(rightKnee) || up.contains(rightKnee) || up.isInside(rightKnee)) {
-                state.right = true;
-            }
-            if (straight.intersects(rightKnee) || straight.contains(rightKnee) || straight.isInside(rightKnee)) {
-                state.right = true;
-            }
-            if (down.intersects(rightKnee) || down.contains(rightKnee) || down.isInside(rightKnee)) {
-                state.right = true;
-            }
+    //         rightKnee.bounds.centerX = motionFrame.bounds.x + (imageSize.width - receievedKeyPoints.keypoints[14].x);
+    //         rightKnee.bounds.centerY = motionFrame.bounds.y + receievedKeyPoints.keypoints[14].y + 20;
 
 
-            if (leftReverse.intersects(leftKnee) || leftReverse.contains(leftKnee) || leftReverse.isInside(leftKnee)) {
-                myCharacter.setReverse(false);
-                isReverse = false;
-            }
+    //         if (firstPosition === 0) {
+    //             firstPosition = leftKnee.bounds.centerY;
+    //         }
 
-            if (rightReverse.intersects(rightKnee) || rightReverse.contains(rightKnee) || rightKnee.isInside(rightKnee)) {
-                myCharacter.setReverse(true);
-                isReverse = true;
-            }
+    //         if (up.intersects(leftKnee) || up.contains(leftKnee) || up.isInside(leftKnee)) {
+    //             movement = "up";
+    //             state.left = true;
+    //         }
+    //         if (straight.intersects(leftKnee) || straight.contains(leftKnee) || straight.isInside(leftKnee)) {
+    //             movement = "straight";
+    //             state.left = true;
+    //         }
+    //         if (down.intersects(leftKnee) || down.contains(leftKnee) || down.isInside(leftKnee)) {
+    //             movement = "down";
+    //             state.left = true;
+    //         }
 
-            if (state.left && state.right) {
-                countWalk += 0.5;
-                state.left = false;
-                state.right = false;
-                if (countWalk === 1) {
-                    countWalk = 0;
-                    // move the fish! keyboard == true
-                    if (movement === "up") {
-                        if (isReverse) {
-                            userState.keys["ArrowUp"] = true;
-                            userState.keys["ArrowRight"] = true;
-                        } else {
-                            userState.keys["ArrowUp"] = true;
-                            userState.keys["ArrowLeft"] = true;
-                        }
-
-                    } else if (movement === "straight") {
-                        if (isReverse) {
-                            userState.keys["ArrowRight"] = true;
-                        } else {
-                            userState.keys["ArrowLeft"] = true;
-                        }
-
-                    } else if (movement === "down") {
-                        if (isReverse) {
-                            userState.keys["ArrowDown"] = true;
-                            userState.keys["ArrowRight"] = true;
-                        } else {
-                            userState.keys["ArrowDown"] = true;
-                            userState.keys["ArrowLeft"] = true;
-                        }
-                    }
-                }
-            }
+    //         if (up.intersects(rightKnee) || up.contains(rightKnee) || up.isInside(rightKnee)) {
+    //             state.right = true;
+    //         }
+    //         if (straight.intersects(rightKnee) || straight.contains(rightKnee) || straight.isInside(rightKnee)) {
+    //             state.right = true;
+    //         }
+    //         if (down.intersects(rightKnee) || down.contains(rightKnee) || down.isInside(rightKnee)) {
+    //             state.right = true;
+    //         }
 
 
-            screen1.content = `saying : ${movement} state : ${state.left} ${state.right} walk ${countWalk}`;
-            screen1.fontSize = 40;
-            screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
+    //         if (leftReverse.intersects(leftKnee) || leftReverse.contains(leftKnee) || leftReverse.isInside(leftKnee)) {
+    //             myCharacter.setReverse(false);
+    //             isReverse = false;
+    //         }
+
+    //         if (rightReverse.intersects(rightKnee) || rightReverse.contains(rightKnee) || rightKnee.isInside(rightKnee)) {
+    //             myCharacter.setReverse(true);
+    //             isReverse = true;
+    //         }
+
+    //         if (state.left && state.right) {
+    //             countWalk += 0.5;
+    //             state.left = false;
+    //             state.right = false;
+    //             if (countWalk === 1) {
+    //                 countWalk = 0;
+    //                 // move the fish! keyboard == true
+    //                 if (movement === "up") {
+    //                     if (isReverse) {
+    //                         userState.keys["ArrowUp"] = true;
+    //                         userState.keys["ArrowRight"] = true;
+    //                     } else {
+    //                         userState.keys["ArrowUp"] = true;
+    //                         userState.keys["ArrowLeft"] = true;
+    //                     }
+
+    //                 } else if (movement === "straight") {
+    //                     if (isReverse) {
+    //                         userState.keys["ArrowRight"] = true;
+    //                     } else {
+    //                         userState.keys["ArrowLeft"] = true;
+    //                     }
+
+    //                 } else if (movement === "down") {
+    //                     if (isReverse) {
+    //                         userState.keys["ArrowDown"] = true;
+    //                         userState.keys["ArrowRight"] = true;
+    //                     } else {
+    //                         userState.keys["ArrowDown"] = true;
+    //                         userState.keys["ArrowLeft"] = true;
+    //                     }
+    //                 }
+    //             }
+    //         }
 
 
-        }
-    };
+    //         screen1.content = `saying : ${movement} state : ${state.left} ${state.right} walk ${countWalk}`;
+    //         screen1.fontSize = 40;
+    //         screen1.bounds.center = [mapSize[0] / 4, mapSize[1] / 4];
+
+
+    //     }
+    // };
 
     function updateTimerAndPhrasePosition(tx, ty, transparentBackground, phrase) {
         const { resizedWidth, resizedHeight } = screenResized();
@@ -413,10 +413,10 @@ async function gameStart(mode, video, myCharacter, mapSize, mobs, obstacles, att
 
         // when control is by motion recognition
         // send video image to worker
-        if (mode === "exercise") {
-            await videoUpdate(isExecuted);
-            isExecuted = true;
-        }
+        // if (mode === "exercise") {
+        //     await videoUpdate(isExecuted);
+        //     isExecuted = true;
+        // }
 
 
 

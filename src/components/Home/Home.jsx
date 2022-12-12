@@ -4,7 +4,7 @@ import ModechageButton from "./ModeChangeButton";
 import Footer from "./Footer";
 import Main from "./Main";
 import Header from "./Header";
-import "./css/index.css";
+// import "./css/index.css";
 
 function Home () {
     const [mode, setMode] = useState("keyboard");

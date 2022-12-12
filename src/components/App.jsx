@@ -5,14 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App () {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/">
-          <Route index element={ <Home /> }></Route>
-          <Route path="game/keyboard" element={ <Game /> }></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Game />
 
   );
 }
