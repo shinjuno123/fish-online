@@ -18,10 +18,10 @@ function Home () {
 
     return (
         <div className="home">
-            <SettingButton />
+            {/* <SettingButton /> */}
             <Header mode={ mode } />
             <Main mode={ mode } />
-            <ModechageButton currentMode={ mode } changeMode={ handleModeChange } />
+            {/* <ModechageButton currentMode={ mode } changeMode={ handleModeChange } /> */}
             <Footer />
         </div>
     );
