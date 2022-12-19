@@ -49,7 +49,13 @@ When your fish reaches at size 300 within 200 sec, You can win this game.
 3. When your fish size is smaller than 60 after getting damage from sea anemones.
 
 
-## :six: :point_right: Frameworks & Libraries
+## :six: :point_right: Frameworks & Libraries & Technical Stack
+- HTML
+- CSS
+- Javascript
+- Bezier Curve(Custom) -> https://github.com/shinjuno123/bezier-curve-exercise
+- React.js
+
 ### Paper.js
 ![image](https://user-images.githubusercontent.com/72008909/207340483-7606fd31-8d5c-437d-b2d6-6d751aa0e4de.png)
 
@@ -59,5 +65,7 @@ Paper.js is an open source vector graphics scripting framework that runs on top 
 ![image](https://user-images.githubusercontent.com/72008909/207340951-087a59ce-cf93-4913-914b-ba47392bb9fd.png)
 
 React is a Javascript Library for building user interfaces.
+
+
 
 
