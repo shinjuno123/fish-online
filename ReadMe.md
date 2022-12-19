@@ -53,7 +53,7 @@ When your fish reaches at size 300 within 200 sec, You can win this game.
 - HTML
 - CSS
 - Javascript
-- Bezier Curve(Custom) -> https://github.com/shinjuno123/bezier-curve-exercise
+- Bezier Curve(Custom) to implement mob's movement -> https://github.com/shinjuno123/bezier-curve-exercise
 - React.js
 
 ### Paper.js
